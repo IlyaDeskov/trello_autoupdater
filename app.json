@@ -1,0 +1,7 @@
+{
+  "name": "Trello_autoupdater",
+  "description": "Trello_autoupdater",
+  "image": "heroku/python",
+  "repository": "https://github.com/IlyaDeskov/trello_autoupdater",
+  "keywords": ["python", "django" ]
+}
