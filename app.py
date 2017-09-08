@@ -34,25 +34,25 @@ if 'DYNO' in os.environ:
 
 @app.route('/', methods=['POST'])
 def main():
-    logger.info(request)
+    app.logger.info(request)
     return make_response('OK', 200)
 
 @app.errorhandler(404)
 def bad_request(error):
-    logger.warn('Bad request.')
+    app.logger.warn('Bad request.')
     return make_response(jsonify({'error': 'Bad request.'}), 404)
 # 405
 @app.errorhandler(405)
 def bad_request(error):
-    logger.warn('Bad type request.')
+    app.logger.warn('Bad type request.')
     return make_response(jsonify({'error': 'Bad type request.'}), 405)
 
 #config server
 if __name__ == "__main__":
-    logger.info('Started web server.')
+    app.logger.info('Started web server.')
     app.debug = True
     app.run()
     r = requests.post('https://api.trello.com/1/tokens/'+config.trelloToken+'/webhooks/?key='+config.trelloKey, data = {description: "Autoupdater webhook", callbackURL: "https://trello-autoupdater.herokuapp.com/", idModel: "555de58432eed35eb238e362",
 })
-    print(r)
-    logger.info('Stoped web server.')
+    app.logger.info(r)
+    app.logger.info('Stoped web server.')
