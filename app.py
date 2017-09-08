@@ -4,7 +4,7 @@
 
 from flask import Flask, request, make_response, jsonify
 import re
-import logging.handlers
+import logging
 import requests
 import config
 
@@ -12,20 +12,25 @@ import config
 app = Flask(__name__)
 
 #log config
-logger = logging.getLogger('Log Trello-autoupdater')
-logger.setLevel(config.logLevel)
+if 'DYNO' in os.environ:
+    app.logger.addHandler(logging.StreamHandler(sys.stdout))
+    app.logger.setLevel(config.logLevel)
+    
+
+#logger = logging.getLogger('Log Trello-autoupdater')
+#logger.setLevel(config.logLevel)
 #file
-fh = logging.handlers.RotatingFileHandler(config.logFile, maxBytes=102400, backupCount=4, encoding=None)
-fh.setLevel(config.logLevel)
+#fh = logging.handlers.RotatingFileHandler(config.logFile, maxBytes=102400, backupCount=4, encoding=None)
+#fh.setLevel(config.logLevel)
 #console
-ch = logging.StreamHandler()
-ch.setLevel(config.logLevel)
+#ch = logging.StreamHandler()
+#ch.setLevel(config.logLevel)
 #format
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-ch.setFormatter(formatter)
-fh.setFormatter(formatter)
-logger.addHandler(ch)
-logger.addHandler(fh)
+#formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+#ch.setFormatter(formatter)
+#fh.setFormatter(formatter)
+#logger.addHandler(ch)
+#logger.addHandler(fh)
 
 @app.route('/', methods=['POST'])
 def main():
