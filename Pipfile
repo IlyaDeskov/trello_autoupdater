@@ -6,7 +6,6 @@ verify_ssl = true
 flask = "*"
 gunicorn = "*"
 requests = "*"
-os = "*"
 sys = "*"
 
 [requires]
