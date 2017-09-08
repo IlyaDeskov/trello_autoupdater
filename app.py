@@ -12,10 +12,8 @@ import config
 app = Flask(__name__)
 
 #log config
-if 'DYNO' in os.environ:
-    app.logger.addHandler(logging.StreamHandler(sys.stdout))
-    app.logger.setLevel(config.logLevel)
-    
+app.logger.addHandler(logging.StreamHandler(sys.stdout))
+app.logger.setLevel(config.logLevel)
 
 #logger = logging.getLogger('Log Trello-autoupdater')
 #logger.setLevel(config.logLevel)
