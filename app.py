@@ -18,6 +18,9 @@ def setup_logging():
         # In production mode, add log handler to sys.stderr.
         app.logger.addHandler(logging.StreamHandler())
         app.logger.setLevel(logging.INFO)
+        app.logger.info('logger ready')
+        r = requests.post('https://api.trello.com/1/tokens/'+config.trelloToken+'/webhooks/?key='+config.trelloKey, data = {description: "Autoupdater webhook", callbackURL: "https://trello-autoupdater.herokuapp.com/", idModel: "555de58432eed35eb238e362"})
+        app.logger.info(r)
 
 #logger = logging.getLogger('Log Trello-autoupdater')
 #logger.setLevel(config.logLevel)
@@ -54,7 +57,4 @@ if __name__ == "__main__":
     app.logger.info('Started web server.')
     app.debug = True
     app.run()
-    r = requests.post('https://api.trello.com/1/tokens/'+config.trelloToken+'/webhooks/?key='+config.trelloKey, data = {description: "Autoupdater webhook", callbackURL: "https://trello-autoupdater.herokuapp.com/", idModel: "555de58432eed35eb238e362",
-})
-    app.logger.info('https://api.trello.com/1/tokens/'+config.trelloToken+'/webhooks/?key='+config.trelloKey)
     app.logger.info('Stoped web server.')
