@@ -40,7 +40,7 @@ def setup_logging():
 
 @app.route('/', methods=['POST','GET'])
 def main():
-    app.logger.info(request)
+    app.logger.info(request.data)
     return make_response('OK', 200)
 
 @app.errorhandler(404)
