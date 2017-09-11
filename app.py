@@ -37,7 +37,7 @@ def setup_logging():
 #logger.addHandler(ch)
 #logger.addHandler(fh)
 
-@app.route('/', methods=['POST'])
+@app.route('/', methods=['POST','GET'])
 def main():
     app.logger.info(request)
     return make_response('OK', 200)
