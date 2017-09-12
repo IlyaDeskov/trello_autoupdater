@@ -12,16 +12,17 @@ import config
 app = Flask(__name__)
 
 #log config
-@app.before_first_request
-def setup_logging():
-    if not app.debug:
+#@app.before_first_request
+#def setup_logging():
+#    if not app.debug:
         # In production mode, add log handler to sys.stderr.
-        app.logger.addHandler(logging.StreamHandler())
-        app.logger.setLevel(logging.INFO)
-        app.logger.info('logger ready')
+#        app.logger.addHandler(logging.StreamHandler())
+#        app.logger.setLevel(logging.INFO)
+#        app.logger.info('logger ready')
         #r = requests.get('https://api.trello.com/1/tokens/'+config.trelloToken+'/webhooks/?key='+config.trelloKey).content path_url
-        r = requests.post('https://api.trello.com/1/tokens/'+config.trelloToken+'/webhooks/?key='+config.trelloKey, data = {'description': 'Autoupdater webhook', 'callbackURL': 'https://trello-autoupdater.herokuapp.com/', 'idModel': '555de58432eed35eb238e362'})
-        app.logger.info(r.request.body)
+#        r = requests.post('https://api.trello.com/1/tokens/'+config.trelloToken+'/webhooks/?key='+config.trelloKey, data = {'description': 'Autoupdater webhook', 'callbackURL': 'https://trello-autoupdater.herokuapp.com/', 'idModel': '555de58432eed35eb238e362'})
+#        app.logger.info(r.request.url)
+#		app.logger.info(r.request.body)
 
 #logger = logging.getLogger('Log Trello-autoupdater')
 #logger.setLevel(config.logLevel)
@@ -55,7 +56,15 @@ def bad_request(error):
 
 #config server
 if __name__ == "__main__":
-    app.logger.info('Started web server.')
+    app.logger.addHandler(logging.StreamHandler())
+    app.logger.setLevel(logging.INFO)
+    app.logger.info('logger ready')
+    app.logger.info('Initialization Request')
+    r = requests.post('https://api.trello.com/1/tokens/'+config.trelloToken+'/webhooks/?key='+config.trelloKey, data = {'description': 'Autoupdater webhook', 'callbackURL': 'https://trello-autoupdater.herokuapp.com/', 'idModel': '555de58432eed35eb238e362'})
+    app.logger.info(r.request.path_url)
+    app.logger.info(r.request.url)
+    app.logger.info(r.request.body)
+    app.logger.info('Starting web server.')
     app.debug = True
     app.run()
     app.logger.info('Stoped web server.')
