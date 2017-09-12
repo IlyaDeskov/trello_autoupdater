@@ -6,6 +6,6 @@ verify_ssl = true
 flask = "*"
 gunicorn = "*"
 requests = "*"
-
+jsonpath-rw = "*"
 [requires]
 python_version = "3.6"
