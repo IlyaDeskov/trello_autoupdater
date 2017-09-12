@@ -42,7 +42,7 @@ def setup_logging():
 #logger.addHandler(fh)
 
 @app.route('/', methods=['GET'])
-def main():
+def process_get_req():
     app.logger.info(request.data)
     return make_response('OK', 200)
 
