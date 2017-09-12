@@ -21,7 +21,7 @@ def setup_logging():
         app.logger.info('logger ready')
         #r = requests.get('https://api.trello.com/1/tokens/'+config.trelloToken+'/webhooks/?key='+config.trelloKey).content
         r = requests.post('https://api.trello.com/1/tokens/'+config.trelloToken+'/webhooks/?key='+config.trelloKey, data = {'description': 'Autoupdater webhook', 'callbackURL': 'https://trello-autoupdater.herokuapp.com/', 'idModel': '555de58432eed35eb238e362'})
-        app.logger.info(r)
+        app.logger.info(r.request)
 
 #logger = logging.getLogger('Log Trello-autoupdater')
 #logger.setLevel(config.logLevel)
