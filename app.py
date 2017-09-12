@@ -7,6 +7,7 @@ import re
 import logging
 import requests
 import config
+from jsonpath_rw import jsonpath, parse
 
 #start
 app = Flask(__name__)
@@ -40,8 +41,17 @@ def setup_logging():
 #logger.addHandler(ch)
 #logger.addHandler(fh)
 
-@app.route('/', methods=['POST','GET'])
+@app.route('/', methods=['GET'])
 def main():
+    app.logger.info(request.data)
+    return make_response('OK', 200)
+
+@app.route('/', methods=['POST'])
+def main():
+    app.logger.info(request.remote_addr)
+#    if request.url != config.gitlabUrl:
+#        logger.warn('Unauthorized gitlab : %s.', request.url)
+#        return make_response(jsonify({'error': 'Unauthorized gitlab.'}), 401)
     app.logger.info(request.data)
     return make_response('OK', 200)
 

@@ -14,7 +14,10 @@ boardName ='MyDemo'
 creatNewCard = False
 
 #gitlabUrl = "http://192.168.20.249:9000/"
-gitlabUrl = "http://127.0.0.1:9000/"
+trelloWebhookIPs = {'107.23.104.115',
+                    '107.23.149.70',
+                    '54.152.166.250',
+                    '54.164.77.56'}
 
 appPort = 80
 #appHost = '192.168.20.249'
