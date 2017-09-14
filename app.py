@@ -41,7 +41,7 @@ def main():
 #        logger.warn('Unauthorized gitlab : %s.', request.url)
 #        return make_response(jsonify({'error': 'Unauthorized gitlab.'}), 401)
     app.logger.info(request.data)
-    app.logger.info(json_translationKey.find(json.loads(request.data)).value)
+    app.logger.info(json_translationKey.find(json.loads(request.data))[0].value)
     return make_response('OK', 200)
 
 @app.errorhandler(404)
