@@ -12,6 +12,8 @@ from jsonpath_rw import jsonpath, parse
 #start
 app = Flask(__name__)
 
+json_translationKey = parse('$.action.display.translationKey')
+
 #log config
 @app.before_first_request
 def setup_logging():
@@ -34,7 +36,7 @@ def process_get_req():
 
 @app.route('/', methods=['POST'])
 def main():
-    app.logger.info(request.remote_addr)
+    app.logger.info(json_translationKey.find(request.data))
 #    if request.url != config.gitlabUrl:
 #        logger.warn('Unauthorized gitlab : %s.', request.url)
 #        return make_response(jsonify({'error': 'Unauthorized gitlab.'}), 401)
