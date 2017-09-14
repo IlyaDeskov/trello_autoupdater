@@ -7,5 +7,7 @@ flask = "*"
 gunicorn = "*"
 requests = "*"
 jsonpath-rw = "*"
+json = "*"
+
 [requires]
 python_version = "3.6"
