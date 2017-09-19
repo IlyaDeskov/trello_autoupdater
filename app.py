@@ -14,6 +14,7 @@ import json
 app = Flask(__name__)
 
 json_updatedcardid = parse('action.data.card.id')
+alter_json_updatedcardid = parse('cards[0].id')
 json_updatedchecklist = parse('action.data.checklist.id')
 
 #log config
@@ -50,7 +51,8 @@ def main():
         if updatedchecklist:
             app.logger.info('updated checklist: ' + updatedchecklist)
             r = requests.get('https://api.trello.com/1/checklists/'+updatedchecklist+'?fields=name&cards=all&card_fields=name&key=' + config.trelloKey + '&token='+config.trelloToken)
-            app.logger.info(r.json())
+            updatedcardid = alter_json_updatedcardid.find(json.loads(r.text))
+            updatedcardid = updatedcardid[0].value if updatedcardid else ''
     app.logger.info(updatedcardid)
     return make_response('OK', 200)
 
