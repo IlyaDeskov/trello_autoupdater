@@ -50,7 +50,7 @@ def main():
         if updatedchecklist:
             app.logger.info('updated checklist: ' + updatedchecklist)
             r = requests.get('https://api.trello.com/1/checklists/'+updatedchecklist+'?fields=name&cards=all&card_fields=name&key=' + config.trelloKey + '&token='+config.trelloToken)
-            app.logger.info(r.body)
+            app.logger.info(r.data)
     app.logger.info(updatedcardid)
     return make_response('OK', 200)
 
