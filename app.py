@@ -14,6 +14,7 @@ import json
 app = Flask(__name__)
 
 json_updatedcardid = parse('action.data.card.id')
+json_updatedchecklist = parse('action.data.checklist.id')
 
 #log config
 @app.before_first_request
@@ -41,7 +42,16 @@ def main():
 #        logger.warn('Unauthorized gitlab : %s.', request.url)
 #        return make_response(jsonify({'error': 'Unauthorized gitlab.'}), 401)
     app.logger.info(request.data)
-    app.logger.info(json_updatedcardid.find(json.loads(request.data))[0].value)
+    updatedcardid = json_updatedcardid.find(json.loads(request.data))
+    updatedcardid = updatedcardid[0].value if updatedcardid else ''
+    if not updatedcardid:
+        updatedchecklist = json_updatedchecklist.find(json.loads(request.data))
+        updatedchecklist = updatedchecklist[0].value if updatedchecklist else ''
+        if updatedchecklist:
+            app.logger.info('updated checklist: ' + updatedchecklist)
+            r = requests.get('https://api.trello.com/1/checklists/'+updatedchecklist'?fields=name&cards=all&card_fields=name&key=' + config.trelloKey + '&token='+config.trelloToken)
+            app.logger.info(r.response.body)
+    app.logger.info(updatedcardid)
     return make_response('OK', 200)
 
 @app.errorhandler(404)
