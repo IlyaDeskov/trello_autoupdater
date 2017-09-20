@@ -58,9 +58,9 @@ def main():
         r = requests.get('https://api.trello.com/1/cards/'+updatedcardid+'?key=' + config.trelloKey + '&token='+config.trelloToken)
         synclabelid = json_label_synchronize.find(json.loads(r.text))
         if synclabelid:
-            app.logger.info('Синхронизируемая карточка')
+            app.logger.info(u'Синхронизируемая карточка')
         else:
-            app.logger.info('НЕ синхронизируемая карточка')
+            app.logger.info(u'НЕ синхронизируемая карточка')
     #app.logger.info(r.text)
     return make_response('OK', 200)
 
