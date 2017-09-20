@@ -53,7 +53,9 @@ def main():
             r = requests.get('https://api.trello.com/1/checklists/'+updatedchecklist+'?fields=name&cards=all&card_fields=name&key=' + config.trelloKey + '&token='+config.trelloToken)
             updatedcardid = alter_json_updatedcardid.find(json.loads(r.text))
             updatedcardid = updatedcardid[0].value if updatedcardid else ''
-    app.logger.info(updatedcardid)
+    r = requests.get('https://api.trello.com/1/cards/'+updatedcardid)
+    
+    app.logger.info(r.text)
     return make_response('OK', 200)
 
 @app.errorhandler(404)
