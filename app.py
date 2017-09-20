@@ -14,8 +14,9 @@ import json
 app = Flask(__name__)
 
 json_updatedcardid = parse('action.data.card.id')
-alter_json_updatedcardid = parse('cards[0].id')
+json_alter_updatedcardid = parse('cards[0].id')
 json_updatedchecklist = parse('action.data.checklist.id')
+json_label_synchronize = parse('labels[?(@.name == "Синхронизируемая")].id')
 
 #log config
 @app.before_first_request
@@ -51,11 +52,16 @@ def main():
         if updatedchecklist:
             app.logger.info('updated checklist: ' + updatedchecklist)
             r = requests.get('https://api.trello.com/1/checklists/'+updatedchecklist+'?fields=name&cards=all&card_fields=name&key=' + config.trelloKey + '&token='+config.trelloToken)
-            updatedcardid = alter_json_updatedcardid.find(json.loads(r.text))
+            updatedcardid = json_alter_updatedcardid.find(json.loads(r.text))
             updatedcardid = updatedcardid[0].value if updatedcardid else ''
-    r = requests.get('https://api.trello.com/1/cards/'+updatedcardid+'?key=' + config.trelloKey + '&token='+config.trelloToken)
-    
-    app.logger.info(r.text)
+    if updatedcardid:
+        r = requests.get('https://api.trello.com/1/cards/'+updatedcardid+'?key=' + config.trelloKey + '&token='+config.trelloToken)
+        synclabelid = json_label_synchronize.find(json.loads(r.text))
+        if synclabelid:
+            app.logger.info('Синхронизируемая карточка')
+        else:
+            app.logger.info('НЕ синхронизируемая карточка')
+    #app.logger.info(r.text)
     return make_response('OK', 200)
 
 @app.errorhandler(404)
