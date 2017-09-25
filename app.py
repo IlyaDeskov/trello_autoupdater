@@ -59,8 +59,8 @@ def main():
         synclabelid = json_label_synchronize.find(json.loads(r.text))
         if synclabelid:
             app.logger.info(u'Синхронизируемая карточка')
-			r = requests.get('https://api.trello.com/1/members/gitlabpflb/boards')
-			app.logger.info(r.text)
+            r = requests.get('https://api.trello.com/1/members/gitlabpflb/boards')
+            app.logger.info(r.text)
         else:
             app.logger.info(u'НЕ синхронизируемая карточка')
     #app.logger.info(r.text)
