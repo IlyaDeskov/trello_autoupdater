@@ -16,7 +16,6 @@ app = Flask(__name__)
 json_updatedcardid = parse('action.data.card.id')
 json_alter_updatedcardid = parse('cards[0].id')
 json_updatedchecklist = parse('action.data.checklist.id')
-
 json_label_synchronize = parse(u'labels[?(@.name == \"Синхронизируемая\")].id')
 
 #log config
