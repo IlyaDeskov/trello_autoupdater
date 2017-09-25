@@ -7,7 +7,7 @@ import re
 import logging
 import requests
 import config
-from jsonpath_rw import jsonpath, parse
+from jsonpath_ng import jsonpath, parse
 import json
 
 #start
