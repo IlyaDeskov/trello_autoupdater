@@ -1,4 +1,4 @@
-# v 0.1
+п»ї# v 0.1
 # m.rogozhnikov@pflb.ru
 #!flask/bin/python
 
@@ -16,7 +16,8 @@ app = Flask(__name__)
 json_updatedcardid = parse('action.data.card.id')
 json_alter_updatedcardid = parse('cards[0].id')
 json_updatedchecklist = parse('action.data.checklist.id')
-json_label_synchronize = parse(u'labels[?(@.name == \"Синхронизируемая\")].id')
+
+json_label_synchronize = parse(u'labels[?(@.name == \"РЎРёРЅС…СЂРѕРЅРёР·РёСЂСѓРµРјР°СЏ\")].id')
 
 #log config
 @app.before_first_request
@@ -58,11 +59,11 @@ def main():
         r = requests.get('https://api.trello.com/1/cards/'+updatedcardid+'?key=' + config.trelloKey + '&token='+config.trelloToken)
         synclabelid = json_label_synchronize.find(json.loads(r.text))
         if synclabelid:
-            app.logger.info(u'Синхронизируемая карточка')
+            app.logger.info(u'РЎРёРЅС…СЂРѕРЅРёР·РёСЂСѓРµРјР°СЏ РєР°СЂС‚РѕС‡РєР°')
             r = requests.get('https://api.trello.com/1/members/gitlabpflb/boards')
             app.logger.info(r.text)
         else:
-            app.logger.info(u'НЕ синхронизируемая карточка')
+            app.logger.info(u'РќР• СЃРёРЅС…СЂРѕРЅРёР·РёСЂСѓРµРјР°СЏ РєР°СЂС‚РѕС‡РєР°')
     #app.logger.info(r.text)
     return make_response('OK', 200)
 
