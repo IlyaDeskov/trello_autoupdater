@@ -7,7 +7,6 @@ flask = "*"
 gunicorn = "*"
 requests = "*"
 jsonpath-ng = "*"
-atexit = "*"
 
 [requires]
 python_version = "3.6"
