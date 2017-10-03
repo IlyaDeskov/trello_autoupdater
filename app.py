@@ -96,7 +96,7 @@ def main():
         synclabelid = json_label_synchronize.find(json.loads(r.text))
         if synclabelid:
             app.logger.info(u'Синхронизируемая карточка')
-            tasksQueue = tasksQueue.append([updatedcardid,request.data])
+            tasksQueue = tasksQueue + [[updatedcardid,request.data]]
             #r = requests.get('https://api.trello.com/1/members/gitlabpflb/boards?fields=id,name&key=' + config.trelloKey + '&token='+config.trelloToken)
             #app.logger.info(r.text)
         else:
