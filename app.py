@@ -51,11 +51,13 @@ def createApp():
                 curTask = tasksQueue.pop(0)
                 #app.logger.info(tasksQueue)
         if curTask:
-            r = requests.get('https://api.trello.com/1/members/gitlabpflb/boards?fields=id,name,labels&key=' + config.trelloKey + '&token='+config.trelloToken) #fields=id,name,labels
+            r = requests.get('https://api.trello.com/1/members/gitlabpflb/boards?fields=id,name&key=' + config.trelloKey + '&token='+config.trelloToken) #fields=id,name,labels
             boardids = json_boardids.find(json.loads(r.text))
             for bid in boardids:
                 if bid.value not in boards:
-                    boards = boards + [bid.value]
+                    rr = requests.get('https://api.trello.com/1/members/gitlabpflb/boards/'+bid.value+'/labels?key=' + config.trelloKey + '&token='+config.trelloToken)
+                    app.logger.info(rr.text)
+                    #boards = boards + [bid.value]
             app.logger.info(r.text)
             app.logger.info(boards)
         #boards = 
