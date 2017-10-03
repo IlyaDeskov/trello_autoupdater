@@ -7,7 +7,6 @@ flask = "*"
 gunicorn = "*"
 requests = "*"
 jsonpath-ng = "*"
-threading = "*"
 atexit = "*"
 
 [requires]
