@@ -43,10 +43,10 @@ def createApp():
         curTask = []
         with queueLock:
         # Do your stuff with commonDataStruct Here
-            app.logger.info(tasksQueue)
+            #app.logger.info(tasksQueue)
             if tasksQueue:
                 curTask = tasksQueue.pop(0)
-                app.logger.info(tasksQueue)
+                #app.logger.info(tasksQueue)
         if curTask:
             r = requests.get('https://api.trello.com/1/members/gitlabpflb/boards?fields=id,name,labelNames&key=' + config.trelloKey + '&token='+config.trelloToken)
             boardids = json_boardids.find(json.loads(r.text))
@@ -54,6 +54,7 @@ def createApp():
                 
                 if bid.value not in boards:
                     boards = boards + [bid.value]
+            app.logger.info(r.text)
             app.logger.info(boards)
         #boards = 
         
