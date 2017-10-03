@@ -11,6 +11,7 @@ from jsonpath_ng import jsonpath, parse
 import json
 import threading
 import atexit
+import signal
 
 CHECK_TIME = 30 #Seconds
 
@@ -73,7 +74,8 @@ def createApp():
     # Initiate
     doStuffStart()
     # When you kill Flask (SIGTERM), clear the trigger for the next thread
-    atexit.register(interruptWorker)
+    signal.signal(signal.SIGTERM, interruptWorker)
+    #atexit.register(interruptWorker)
     return app
 
 #start
