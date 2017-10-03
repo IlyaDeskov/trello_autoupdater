@@ -23,6 +23,13 @@ queueLock = threading.Lock()
 # backgroung worker
 queueWorker = threading.Thread()
 
+boards = []
+json_updatedcardid = parse('action.data.card.id')
+json_alter_updatedcardid = parse('cards[0].id')
+json_updatedchecklist = parse('action.data.checklist.id')
+json_label_synchronize = parse("labels[0].id")#"labels[?(@.name == 'Sync')].id"
+json_boardids = parse('[*].id')
+
 def createApp():
     app = Flask(__name__)
     
@@ -39,10 +46,15 @@ def createApp():
             app.logger.info(tasksQueue)
             if tasksQueue:
                 curTask = tasksQueue.pop(0)
-            app.logger.info(tasksQueue)
+                app.logger.info(tasksQueue)
         if curTask:
-            r = requests.get('https://api.trello.com/1/members/gitlabpflb/boards?fields=id,name&key=' + config.trelloKey + '&token='+config.trelloToken)
-            app.logger.info(r.text)
+            r = requests.get('https://api.trello.com/1/members/gitlabpflb/boards?fields=id,name,labelNames&key=' + config.trelloKey + '&token='+config.trelloToken)
+            boardids = json_boardids.find(json.loads(r.text))
+            for bid in boardids:
+                
+                if bid.value not in boards:
+                    boards = boards + [bid.value]
+            app.logger.info(boards)
         #boards = 
         
         # Set the next thread to happen
@@ -64,11 +76,6 @@ def createApp():
 
 #start
 app = createApp() 
-
-json_updatedcardid = parse('action.data.card.id')
-json_alter_updatedcardid = parse('cards[0].id')
-json_updatedchecklist = parse('action.data.checklist.id')
-json_label_synchronize = parse("labels[0].id")#"labels[?(@.name == 'Sync')].id"
 
 #log config
 @app.before_first_request
