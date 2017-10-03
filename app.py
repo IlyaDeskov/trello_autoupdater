@@ -54,7 +54,7 @@ def createApp():
     return app
 
 #start
-app = create_app() 
+app = createApp() 
 
 json_updatedcardid = parse('action.data.card.id')
 json_alter_updatedcardid = parse('cards[0].id')
