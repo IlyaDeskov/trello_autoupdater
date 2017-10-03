@@ -50,7 +50,7 @@ def createApp():
     # Initiate
     doStuffStart()
     # When you kill Flask (SIGTERM), clear the trigger for the next thread
-    atexit.register(interrupt)
+    atexit.register(interruptWorker)
     return app
 
 #start
