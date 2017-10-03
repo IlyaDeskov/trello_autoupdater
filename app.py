@@ -9,9 +9,52 @@ import requests
 import config
 from jsonpath_ng import jsonpath, parse
 import json
+import threading
+import atexit
+
+CHECK_TIME = 30 #Seconds
+
+# Queue
+tasksQueue = []
+
+# Queue lock
+queueLock = threading.Lock()
+
+# backgroung worker
+queueWorker = threading.Thread()
+
+def createApp():
+    app = Flask(__name__)
+    
+    def interruptWorker():
+        global queueWorker
+        queueWorker.cancel()
+
+    def doStuff():
+        global tasksQueue
+        global queueWorker
+        with queueLock:
+        # Do your stuff with commonDataStruct Here
+            app.logger.info(tasksQueue)
+        # Set the next thread to happen
+        queueWorker = threading.Timer(CHECK_TIME, doStuff, ())
+        queueWorker.start()   
+
+    def doStuffStart():
+        # Do initialisation stuff here
+        global queueWorker
+        # Create your thread
+        queueWorker = threading.Timer(CHECK_TIME, doStuff, ())
+        queueWorker.start()
+    
+    # Initiate
+    doStuffStart()
+    # When you kill Flask (SIGTERM), clear the trigger for the next thread
+    atexit.register(interrupt)
+    return app
 
 #start
-app = Flask(__name__)
+app = create_app() 
 
 json_updatedcardid = parse('action.data.card.id')
 json_alter_updatedcardid = parse('cards[0].id')
@@ -26,11 +69,7 @@ def setup_logging():
         app.logger.addHandler(logging.StreamHandler())
         app.logger.setLevel(logging.INFO)
         app.logger.info('logger ready')
-        #r = requests.get('https://api.trello.com/1/tokens/'+config.trelloToken+'/webhooks/?key='+config.trelloKey).content 
-        #r = requests.post('https://api.trello.com/1/tokens/'+config.trelloToken+'/webhooks/?key='+config.trelloKey, data = {'description': 'Autoupdater webhook', 'callbackURL': 'https://trello-autoupdater.herokuapp.com/', 'idModel': '555de58432eed35eb238e362'})
-        #app.logger.info(r.request.path_url)
-        #app.logger.info(r.request.url)
-        #app.logger.info(r.request.body)
+
 
 
 @app.route('/', methods=['GET'])
@@ -40,9 +79,7 @@ def process_get_req():
 
 @app.route('/', methods=['POST'])
 def main():
-#    if request.url != config.gitlabUrl:
-#        logger.warn('Unauthorized gitlab : %s.', request.url)
-#        return make_response(jsonify({'error': 'Unauthorized gitlab.'}), 401)
+    global tasksQueue
     app.logger.info(request.data)
     updatedcardid = json_updatedcardid.find(json.loads(request.data))
     updatedcardid = updatedcardid[0].value if updatedcardid else ''
@@ -59,8 +96,9 @@ def main():
         synclabelid = json_label_synchronize.find(json.loads(r.text))
         if synclabelid:
             app.logger.info(u'Синхронизируемая карточка')
-            r = requests.get('https://api.trello.com/1/members/gitlabpflb/boards?fields=id,name&key=' + config.trelloKey + '&token='+config.trelloToken)
-            app.logger.info(r.text)
+            tasksQueue = tasksQueue.append([updatedcardid,request.data])
+            #r = requests.get('https://api.trello.com/1/members/gitlabpflb/boards?fields=id,name&key=' + config.trelloKey + '&token='+config.trelloToken)
+            #app.logger.info(r.text)
         else:
             app.logger.info(u'НЕ синхронизируемая карточка')
     #app.logger.info(r.text)
