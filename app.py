@@ -35,7 +35,7 @@ json_boardids = parse('[*].id')
 def createApp():
     app = Flask(__name__)
     
-    def interruptWorker(self, signum, frame):
+    def interruptWorker(self, signum):
         global queueWorker
         queueWorker.cancel()
 
@@ -55,7 +55,7 @@ def createApp():
             boardids = json_boardids.find(json.loads(r.text))
             for bid in boardids:
                 if bid.value not in boards:
-                    rr = requests.get('https://api.trello.com/1/members/gitlabpflb/boards/'+bid.value+'/labels?key=' + config.trelloKey + '&token='+config.trelloToken)
+                    rr = requests.get('https://api.trello.com/1/boards/'+bid.value+'/labels?key=' + config.trelloKey + '&token='+config.trelloToken)
                     app.logger.info(rr.text)
                     #boards = boards + [bid.value]
             app.logger.info(r.text)
