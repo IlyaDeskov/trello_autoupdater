@@ -24,6 +24,7 @@ queueLock = threading.Lock()
 queueWorker = threading.Thread()
 
 boards = []
+
 json_updatedcardid = parse('action.data.card.id')
 json_alter_updatedcardid = parse('cards[0].id')
 json_updatedchecklist = parse('action.data.checklist.id')
@@ -40,6 +41,7 @@ def createApp():
     def doStuff():
         global tasksQueue
         global queueWorker
+        global boards
         curTask = []
         with queueLock:
         # Do your stuff with commonDataStruct Here
@@ -51,7 +53,6 @@ def createApp():
             r = requests.get('https://api.trello.com/1/members/gitlabpflb/boards?fields=id,name,labelNames&key=' + config.trelloKey + '&token='+config.trelloToken)
             boardids = json_boardids.find(json.loads(r.text))
             for bid in boardids:
-                
                 if bid.value not in boards:
                     boards = boards + [bid.value]
             app.logger.info(r.text)
