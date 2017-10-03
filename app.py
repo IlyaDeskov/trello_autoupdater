@@ -33,6 +33,7 @@ def createApp():
     def doStuff():
         global tasksQueue
         global queueWorker
+        curTask = []
         with queueLock:
         # Do your stuff with commonDataStruct Here
             app.logger.info(tasksQueue)
