@@ -36,7 +36,8 @@ def createApp():
         with queueLock:
         # Do your stuff with commonDataStruct Here
             app.logger.info(tasksQueue)
-            curTask = tasksQueue.pop(0)
+            if tasksQueue:
+                curTask = tasksQueue.pop(0)
             app.logger.info(tasksQueue)
         if curTask:
             r = requests.get('https://api.trello.com/1/members/gitlabpflb/boards?fields=id,name&key=' + config.trelloKey + '&token='+config.trelloToken)
