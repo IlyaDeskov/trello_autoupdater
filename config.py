@@ -6,12 +6,17 @@
 import logging
 
 #https://trello.com/app-key
-trelloKey = '59e33cebad55b7425df537d6a060e781'
+TRELLO_KEY = '59e33cebad55b7425df537d6a060e781'
 #https://trello.com/1/connect?key= trelloKey &name=trellogitlab&response_type=token&scope=read,write&expiration=never
-trelloToken = 'a2e64fa49cb7ccc2f7f706eb2282d0867e1e9f901b966fe63d0db16a67c3bd1c'
+TRELLO_TOKEN = 'a2e64fa49cb7ccc2f7f706eb2282d0867e1e9f901b966fe63d0db16a67c3bd1c'
+
+CREDENTIALS_STR = '&key=' + TRELLO_KEY + '&token='+TRELLO_TOKEN
+
+SYNC_LABEL_NAME = 'Sync'
+CHECK_TIME = 30 #Seconds
+
+
 boardName ='MyDemo'
-#if you want
-creatNewCard = False
 
 #gitlabUrl = "http://192.168.20.249:9000/"
 trelloWebhookIPs = {'107.23.104.115',

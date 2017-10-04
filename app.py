@@ -12,7 +12,6 @@ import threading
 import atexit
 import signal
 
-CHECK_TIME = 30 #Seconds
 
 # Queue
 tasksQueue = []
@@ -28,7 +27,7 @@ boards = []
 json_updatedcardid = parse('action.data.card.id')
 json_alter_updatedcardid = parse('cards[0].id')
 json_updatedchecklist = parse('action.data.checklist.id')
-json_label_synchronize = parse("labels[0].id")#"labels[?(@.name == 'Sync')].id"
+#json_label_synchronize = parse("labels[0].id")#"labels[?(@.name == 'Sync')].id"
 
 json_boardids = parse('[*].id')
 
@@ -51,17 +50,20 @@ def createApp():
                 curTask = tasksQueue.pop(0)
                 #app.logger.info(tasksQueue)
         if curTask:
-            r = requests.get('https://api.trello.com/1/members/gitlabpflb/boards?fields=id,name&key=' + config.trelloKey + '&token='+config.trelloToken) #fields=id,name,labels
-            boardids = json_boardids.find(json.loads(r.text))
-            for bid in boardids:
-                if bid.value not in boards:
-                    rr = requests.get('https://api.trello.com/1/boards/'+bid.value+'/labels?key=' + config.trelloKey + '&token='+config.trelloToken)
+            r = requests.get('https://api.trello.com/1/members/gitlabpflb/boards?fields=id,name' + CREDENTIALS_STR) #fields=id,name
+            
+#            boardids = json_boardids.find(json.loads(r.text))
+#            for bid in boardids:
+#                if bid.value not in boards:
+#                    boardlabels = requests.get('https://api.trello.com/1/boards/'+bid.value+'/labels?' + CREDENTIALS_STR)
+#                    loaded = json.loads(boardlabels.text)
+#                    synclabel = list(filter(lambda a: a['name'] == SYNC_LABEL_NAME, loaded))
+#                    if synclabel
                     #resu = jsonpath.jsonpath(json.loads(rr.text), "$.[?(@.name == 'Sync')]")
-                    app.logger.info(rr.text)
+#                    app.logger.info(rr.text)
                     #boards = boards + [bid.value]
             app.logger.info(r.text)
-            app.logger.info(boards)
-        #boards = 
+#            app.logger.info(boards)
         
         # Set the next thread to happen
         queueWorker = threading.Timer(CHECK_TIME, doStuff, ())
@@ -111,16 +113,14 @@ def main():
         updatedchecklist = updatedchecklist[0].value if updatedchecklist else ''
         if updatedchecklist:
             app.logger.info('updated checklist: ' + updatedchecklist)
-            r = requests.get('https://api.trello.com/1/checklists/'+updatedchecklist+'?fields=name&cards=all&card_fields=name&key=' + config.trelloKey + '&token='+config.trelloToken)
+            r = requests.get('https://api.trello.com/1/checklists/'+updatedchecklist+'?fields=name&cards=all&card_fields=name' + CREDENTIALS_STR)
             updatedcardid = json_alter_updatedcardid.find(json.loads(r.text))
             updatedcardid = updatedcardid[0].value if updatedcardid else ''
     if updatedcardid:
-        updatedcardinfo = requests.get('https://api.trello.com/1/cards/'+updatedcardid+'?key=' + config.trelloKey + '&token='+config.trelloToken)
+        updatedcardinfo = requests.get('https://api.trello.com/1/cards/'+updatedcardid+'?' + CREDENTIALS_STR)
         loaded = json.loads(updatedcardinfo.text)
-        app.logger.info(updatedcardinfo.text)
-        synclabel = list(filter(lambda a: a['name'] == 'Sync',loaded['labels']))
+        synclabel = list(filter(lambda a: a['name'] == SYNC_LABEL_NAME,loaded['labels']))
         app.logger.info(synclabel)
-        #synclabelid = filter(lambda a: a['name'] == 'Sync' and a['color'] == 'null' ,json.loads(r.text))
         if synclabel:
             app.logger.info(u'Синхронизируемая карточка')
             tasksQueue = tasksQueue + [[updatedcardid,updatedcardinfo.text,request.data]]
