@@ -27,11 +27,10 @@ boards = []
 json_updatedcardid = parse('action.data.card.id')
 json_alter_updatedcardid = parse('cards[0].id')
 json_updatedchecklist = parse('action.data.checklist.id')
-
+json_updatedcardname = parse('action.data.card.name')
 json_action = parse('action.display.translationKey')
 json_autor = parse('action.display.entities.memberCreator.username')
 
-json_boardids = parse('[*].id')
 
 def createApp():
     app = Flask(__name__)
@@ -52,16 +51,18 @@ def createApp():
                 curTask = tasksQueue.pop(0)
                 #app.logger.info(tasksQueue)
         if curTask:
+            updatedcardname = json_updatedcardname.find(curTask[2])
+            updatedcardname = updatedcardname[0].value if updatedcardname else ''
+            app.logger.info('updated card name: "%s"' % updatedcardname)
             r = requests.get('https://api.trello.com/1/members/gitlabpflb/boards?fields=id,name' + config.CREDENTIALS_STR) #fields=id,name
             filtered = list(filter(lambda a: a['name'] not in config.BOARD_FILTER ,json.loads(r.text)))
             boardids = [b['id'] for b in filtered]
-#            boardids = json_boardids.find(json.loads(r.text))
             for bid in boardids:
                 boardlabels = requests.get('https://api.trello.com/1/boards/'+bid+'/labels?' + config.CREDENTIALS_STR)
                 loaded = json.loads(boardlabels.text)
                 synclabel = list(filter(lambda a: a['name'] == config.SYNC_LABEL_NAME, loaded))
                 if synclabel:
-                    app.logger.info(u'Синхронизируем с доской '+ bid)
+                    app.logger.info('Synchronizing with board '+ bid)
                     app.logger.info(curTask[2])
         # Set the next thread to happen
         queueWorker = threading.Timer(config.CHECK_TIME, doStuff, ())
@@ -126,10 +127,10 @@ def main():
         synclabel = list(filter(lambda a: a['name'] == config.SYNC_LABEL_NAME,loaded['labels']))
         #app.logger.info(synclabel)
         if synclabel:
-            app.logger.info(u'Синхронизируемая карточка')
+            app.logger.info('Synchronized card')
             tasksQueue = tasksQueue + [[updatedcardid,updatedcardinfo.text,j]]
         else:
-            app.logger.info(u'НЕ синхронизируемая карточка')
+            app.logger.info(u'NOT Synchronized card')
     #app.logger.info(r.text)
     return make_response('OK', 200)
 
