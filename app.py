@@ -28,6 +28,7 @@ json_updatedcardid = parse('action.data.card.id')
 json_alter_updatedcardid = parse('cards[0].id')
 json_updatedchecklist = parse('action.data.checklist.id')
 json_updatedcardname = parse('action.data.card.name')
+json_oldupdatedcardname = parse('action.data.old.name')
 json_action = parse('action.display.translationKey')
 json_autor = parse('action.display.entities.memberCreator.username')
 
@@ -51,7 +52,10 @@ def createApp():
                 curTask = tasksQueue.pop(0)
                 #app.logger.info(tasksQueue)
         if curTask:
-            updatedcardname = json_updatedcardname.find(curTask[2])
+            if curTask[1] == 'action_renamed_card':
+                updatedcardname = json_oldupdatedcardname.find(curTask[2])
+            else
+                updatedcardname = json_updatedcardname.find(curTask[2])
             updatedcardname = updatedcardname[0].value if updatedcardname else ''
             app.logger.info('updated card name: "%s"' % updatedcardname)
             r = requests.get('https://api.trello.com/1/members/gitlabpflb/boards?fields=id,name' + config.CREDENTIALS_STR) #fields=id,name
@@ -128,7 +132,7 @@ def main():
         #app.logger.info(synclabel)
         if synclabel:
             app.logger.info('Synchronized card')
-            tasksQueue = tasksQueue + [[updatedcardid,updatedcardinfo.text,j]]
+            tasksQueue = tasksQueue + [[updatedcardid,action,j,updatedcardinfo.text]]
         else:
             app.logger.info(u'NOT Synchronized card')
     #app.logger.info(r.text)
