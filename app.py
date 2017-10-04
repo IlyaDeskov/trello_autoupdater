@@ -120,7 +120,7 @@ def main():
             updatedcardid = json_alter_updatedcardid.find(json.loads(r.text))
             updatedcardid = updatedcardid[0].value if updatedcardid else ''
     if updatedcardid:
-        app.logger.info('%s did %s on %s' % autor,action,updatedcardid)
+        app.logger.info('%s did %s on %s' % (autor,action,updatedcardid))
         updatedcardinfo = requests.get('https://api.trello.com/1/cards/'+updatedcardid+'?' + config.CREDENTIALS_STR)
         loaded = json.loads(updatedcardinfo.text)
         synclabel = list(filter(lambda a: a['name'] == config.SYNC_LABEL_NAME,loaded['labels']))
