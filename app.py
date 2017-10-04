@@ -116,12 +116,13 @@ def main():
             updatedcardid = updatedcardid[0].value if updatedcardid else ''
     if updatedcardid:
         r = requests.get('https://api.trello.com/1/cards/'+updatedcardid+'?key=' + config.trelloKey + '&token='+config.trelloToken)
-        synclabelid = filter(lambda a: a['name'] == 'Sync' and a['color'] == 'null' ,json.loads(r.text))
-        if synclabelid:
-            app.logger.info(u'Синхронизируемая карточка')
-            tasksQueue = tasksQueue + [[updatedcardid,request.data]]
-        else:
-            app.logger.info(u'НЕ синхронизируемая карточка')
+        app.logger.info(r.text)
+        #synclabelid = filter(lambda a: a['name'] == 'Sync' and a['color'] == 'null' ,json.loads(r.text))
+        #if synclabelid:
+            #app.logger.info(u'Синхронизируемая карточка')
+            #tasksQueue = tasksQueue + [[updatedcardid,request.data]]
+        #else:
+            #app.logger.info(u'НЕ синхронизируемая карточка')
     #app.logger.info(r.text)
     return make_response('OK', 200)
 
