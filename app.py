@@ -28,6 +28,8 @@ json_updatedcardid = parse('action.data.card.id')
 json_alter_updatedcardid = parse('cards[0].id')
 json_updatedchecklist = parse('action.data.checklist.id')
 #json_label_synchronize = parse("labels[0].id")#"labels[?(@.name == 'Sync')].id"
+#действие $.action.display.translationKey
+#автор $.action.display.entities.memberCreator.username
 
 json_boardids = parse('[*].id')
 
@@ -101,11 +103,12 @@ def process_get_req():
 @app.route('/', methods=['POST'])
 def main():
     global tasksQueue
-    app.logger.info(request.data)
-    updatedcardid = json_updatedcardid.find(json.loads(request.data))
+    #app.logger.info(request.data)
+    j = json.loads(request.data)
+    updatedcardid = json_updatedcardid.find(j)
     updatedcardid = updatedcardid[0].value if updatedcardid else ''
     if not updatedcardid:
-        updatedchecklist = json_updatedchecklist.find(json.loads(request.data))
+        updatedchecklist = json_updatedchecklist.find(j)
         updatedchecklist = updatedchecklist[0].value if updatedchecklist else ''
         if updatedchecklist:
             app.logger.info('updated checklist: ' + updatedchecklist)
@@ -119,7 +122,7 @@ def main():
         #app.logger.info(synclabel)
         if synclabel:
             app.logger.info(u'Синхронизируемая карточка')
-            tasksQueue = tasksQueue + [[updatedcardid,updatedcardinfo.text,request.data]]
+            tasksQueue = tasksQueue + [[updatedcardid,updatedcardinfo.text,j]]
         else:
             app.logger.info(u'НЕ синхронизируемая карточка')
     #app.logger.info(r.text)
