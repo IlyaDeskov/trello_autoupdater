@@ -58,8 +58,8 @@ def createApp():
                 updatedcardname = json_updatedcardname.find(curTask[2])
             updatedcardname = updatedcardname[0].value if updatedcardname else ''
             app.logger.info('updated card name: "%s"' % updatedcardname)
-            r = requests.get('https://api.trello.com/1/members/gitlabpflb/boards?fields=id,name' + config.CREDENTIALS_STR) #fields=id,name
-            filtered = list(filter(lambda a: a['name'] not in config.BOARD_FILTER ,json.loads(r.text)))
+            boardlist = requests.get('https://api.trello.com/1/members/gitlabpflb/boards?fields=id,name' + config.CREDENTIALS_STR) #fields=id,name
+            filtered = list(filter(lambda a: a['name'] not in config.BOARD_FILTER ,json.loads(boardlist.text)))
             boardids = [b['id'] for b in filtered]
             for bid in boardids:
                 boardlabels = requests.get('https://api.trello.com/1/boards/'+bid+'/labels?' + config.CREDENTIALS_STR)
@@ -67,7 +67,8 @@ def createApp():
                 synclabel = list(filter(lambda a: a['name'] == config.SYNC_LABEL_NAME, loaded))
                 if synclabel:
                     app.logger.info('Synchronizing with board '+ bid)
-                    app.logger.info(curTask[2])
+                    boardcards = requests.get('https://api.trello.com/1/boards/'+bid+'/cards/?' + config.CREDENTIALS_STR)
+                    app.logger.info(boardcards)
         # Set the next thread to happen
         queueWorker = threading.Timer(config.CHECK_TIME, doStuff, ())
         queueWorker.start()   
