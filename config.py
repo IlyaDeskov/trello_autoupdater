@@ -11,12 +11,12 @@ TRELLO_KEY = '59e33cebad55b7425df537d6a060e781'
 TRELLO_TOKEN = 'a2e64fa49cb7ccc2f7f706eb2282d0867e1e9f901b966fe63d0db16a67c3bd1c'
 
 CREDENTIALS_STR = '&key=' + TRELLO_KEY + '&token='+TRELLO_TOKEN
+BOARD_NAME =u'ИПР Template LT'
 
 SYNC_LABEL_NAME = 'Sync'
 CHECK_TIME = 30 #Seconds
 
-
-boardName ='MyDemo'
+BOARD_FILTER = [BOARD_NAME,'MyDemo','UXCrowd',u'Развитие направления НТ']
 
 #gitlabUrl = "http://192.168.20.249:9000/"
 trelloWebhookIPs = {'107.23.104.115',

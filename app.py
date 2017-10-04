@@ -51,19 +51,20 @@ def createApp():
                 #app.logger.info(tasksQueue)
         if curTask:
             r = requests.get('https://api.trello.com/1/members/gitlabpflb/boards?fields=id,name' + config.CREDENTIALS_STR) #fields=id,name
-            
+            filtered = list(filter(lambda a: a['name'] not in config.BOARD_FILTER ,json.loads(r.text)))
+            boardids = [b['id'] for b in filtered]
 #            boardids = json_boardids.find(json.loads(r.text))
-#            for bid in boardids:
-#                if bid.value not in boards:
-#                    boardlabels = requests.get('https://api.trello.com/1/boards/'+bid.value+'/labels?' + config.CREDENTIALS_STR)
-#                    loaded = json.loads(boardlabels.text)
-#                    synclabel = list(filter(lambda a: a['name'] == config.SYNC_LABEL_NAME, loaded))
-#                    if synclabel
-                    #resu = jsonpath.jsonpath(json.loads(rr.text), "$.[?(@.name == 'Sync')]")
-#                    app.logger.info(rr.text)
-                    #boards = boards + [bid.value]
-            app.logger.info(r.text)
-#            app.logger.info(boards)
+            for bid in boardids:
+                boardlabels = requests.get('https://api.trello.com/1/boards/'+bid+'/labels?' + config.CREDENTIALS_STR)
+                loaded = json.loads(boardlabels.text)
+                synclabel = list(filter(lambda a: a['name'] == config.SYNC_LABEL_NAME, loaded))
+                if synclabel:
+                    app.logger.info(u'Синхронизируем с доской '+ bid)
+                #resu = jsonpath.jsonpath(json.loads(rr.text), "$.[?(@.name == 'Sync')]")
+                #app.logger.info(rr.text)
+                #boards = boards + [bid.value]
+            #app.logger.info(r.text)
+            
         
         # Set the next thread to happen
         queueWorker = threading.Timer(config.CHECK_TIME, doStuff, ())
