@@ -69,9 +69,11 @@ def createApp():
                     app.logger.info('Synchronizing with board '+ bid)
                     boardcards = requests.get('https://api.trello.com/1/boards/'+bid+'/cards/?fields=name,id,labels' + config.CREDENTIALS_STR)
                     Synchronizedcard = []
-                    Synchronizedcard = list(filter(lambda a: config.SYNC_LABEL_NAME in [l['name'] for l in a['labels']] and a['name'] == updatedcardname,json.loads(boardcards.text)))
-                    if Synchronizedcard:
-                        app.logger.info('Synchronized card found: %s' % Synchronizedcard[0]['id'])
+                    Synchronizedcards = list(filter(lambda a: config.SYNC_LABEL_NAME in [l['name'] for l in a['labels']] and a['name'] == updatedcardname,json.loads(boardcards.text)))
+                    if Synchronizedcards:
+                        Synchronizedcards = [c['id'] for c in Synchronizedcards]
+                        app.logger.info('Synchronized card found')
+                        app.logger.info(Synchronizedcards)
         # Set the next thread to happen
         queueWorker = threading.Timer(config.CHECK_TIME, doStuff, ())
         queueWorker.start()   
