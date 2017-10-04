@@ -6,7 +6,7 @@ import re
 import logging
 import requests
 import config
-from jsonpath_ng import jsonpath, parse
+from jsonpath-rw-ext import jsonpath, parse
 import json
 import threading
 import atexit
@@ -25,10 +25,11 @@ queueWorker = threading.Thread()
 
 boards = []
 
-json_updatedcardid = parse('action.data.card.id')
-json_alter_updatedcardid = parse('cards[0].id')
-json_updatedchecklist = parse('action.data.checklist.id')
-json_label_synchronize = parse("labels[0].id")#"labels[?(@.name == 'Sync')].id"
+json_updatedcardid = parse('$.action.data.card.id')
+json_alter_updatedcardid = parse('$.cards[0].id')
+json_updatedchecklist = parse('$.action.data.checklist.id')
+json_label_synchronize = parse("$.labels[?(@.name == 'Sync')].id")#
+json_label_synchronize_2 = parse("$.[?(@.name == 'Sync')]")
 
 json_boardids = parse('[*].id')
 
@@ -56,7 +57,6 @@ def createApp():
             for bid in boardids:
                 if bid.value not in boards:
                     rr = requests.get('https://api.trello.com/1/boards/'+bid.value+'/labels?key=' + config.trelloKey + '&token='+config.trelloToken)
-                    resu = jsonpath.jsonpath(json.loads(rr.text), "$.[?(@.name == 'Sync')]")
                     app.logger.info(resu)
                     #boards = boards + [bid.value]
             app.logger.info(r.text)
