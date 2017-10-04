@@ -67,7 +67,7 @@ def createApp():
                 synclabel = list(filter(lambda a: a['name'] == config.SYNC_LABEL_NAME, loaded))
                 if synclabel:
                     app.logger.info('Synchronizing with board '+ bid)
-                    boardcards = requests.get('https://api.trello.com/1/boards/'+bid+'/cards/?fields=name,id' + config.CREDENTIALS_STR)
+                    boardcards = requests.get('https://api.trello.com/1/boards/'+bid+'/cards/?fields=name,id,labels' + config.CREDENTIALS_STR)
                     app.logger.info(boardcards.text)
         # Set the next thread to happen
         queueWorker = threading.Timer(config.CHECK_TIME, doStuff, ())
