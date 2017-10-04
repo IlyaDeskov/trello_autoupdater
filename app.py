@@ -6,7 +6,7 @@ import re
 import logging
 import requests
 import config
-from jsonpath-rw-ext import jsonpath, parse
+from jsonpath_rw_ext import jsonpath, parse
 import json
 import threading
 import atexit
