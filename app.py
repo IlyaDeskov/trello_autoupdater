@@ -6,7 +6,7 @@ import re
 import logging
 import requests
 import config
-from jsonpath_rw_ext import parse
+import jsonpath_rw_ext as jp
 import json
 import threading
 import atexit
@@ -25,11 +25,11 @@ queueWorker = threading.Thread()
 
 boards = []
 
-json_updatedcardid = parse('$.action.data.card.id')
-json_alter_updatedcardid = parse('$.cards[0].id')
-json_updatedchecklist = parse('$.action.data.checklist.id')
-json_label_synchronize = parse("$.labels[?(@.name == 'Sync')].id")#
-json_label_synchronize_2 = parse("$.[?(@.name == 'Sync')]")
+json_updatedcardid = jp.parse('$.action.data.card.id')
+json_alter_updatedcardid = jp.parse('$.cards[0].id')
+json_updatedchecklist = jp.parse('$.action.data.checklist.id')
+json_label_synchronize = jp.parse("$.labels[?(@.name == 'Sync')].id")#
+json_label_synchronize_2 = jp.parse("$.[?(@.name == 'Sync')]")
 
 json_boardids = parse('[*].id')
 
