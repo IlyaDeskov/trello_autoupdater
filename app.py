@@ -1,5 +1,4 @@
-﻿# v 0.1
-# m.rogozhnikov@pflb.ru
+﻿# i.deskov@pflb.ru
 #!flask/bin/python
 
 from flask import Flask, request, make_response, jsonify
@@ -30,6 +29,7 @@ json_updatedcardid = parse('action.data.card.id')
 json_alter_updatedcardid = parse('cards[0].id')
 json_updatedchecklist = parse('action.data.checklist.id')
 json_label_synchronize = parse("labels[0].id")#"labels[?(@.name == 'Sync')].id"
+
 json_boardids = parse('[*].id')
 
 def createApp():
@@ -56,7 +56,8 @@ def createApp():
             for bid in boardids:
                 if bid.value not in boards:
                     rr = requests.get('https://api.trello.com/1/boards/'+bid.value+'/labels?key=' + config.trelloKey + '&token='+config.trelloToken)
-                    app.logger.info(rr.text)
+                    resu = jsonpath.jsonpath(json.loads(rr.text), "$.[?(@.name == 'Sync')]")
+                    app.logger.info(resu)
                     #boards = boards + [bid.value]
             app.logger.info(r.text)
             app.logger.info(boards)
