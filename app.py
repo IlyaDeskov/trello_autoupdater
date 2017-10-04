@@ -115,15 +115,17 @@ def main():
             updatedcardid = json_alter_updatedcardid.find(json.loads(r.text))
             updatedcardid = updatedcardid[0].value if updatedcardid else ''
     if updatedcardid:
-        r = requests.get('https://api.trello.com/1/cards/'+updatedcardid+'?key=' + config.trelloKey + '&token='+config.trelloToken)
-        loaded = json.loads(r.text)
+        updatedcardinfo = requests.get('https://api.trello.com/1/cards/'+updatedcardid+'?key=' + config.trelloKey + '&token='+config.trelloToken)
+        loaded = json.loads(updatedcardinfo.text)
+        app.logger.info(updatedcardinfo.text)
         synclabel = []
         if 'labels' in loaded:
             synclabel = filter(lambda a: a['name'] == 'Sync',loaded['labels'])
+        app.logger.info(synclabel)
         #synclabelid = filter(lambda a: a['name'] == 'Sync' and a['color'] == 'null' ,json.loads(r.text))
         if synclabel:
             app.logger.info(u'Синхронизируемая карточка')
-            tasksQueue = tasksQueue + [[updatedcardid,request.data]]
+            tasksQueue = tasksQueue + [[updatedcardid,updatedcardinfo.text,request.data]]
         else:
             app.logger.info(u'НЕ синхронизируемая карточка')
     #app.logger.info(r.text)
