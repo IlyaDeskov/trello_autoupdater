@@ -54,7 +54,7 @@ def createApp():
         if curTask:
             if curTask[1] == 'action_renamed_card':
                 updatedcardname = json_oldupdatedcardname.find(curTask[2])
-            else
+            else:
                 updatedcardname = json_updatedcardname.find(curTask[2])
             updatedcardname = updatedcardname[0].value if updatedcardname else ''
             app.logger.info('updated card name: "%s"' % updatedcardname)
