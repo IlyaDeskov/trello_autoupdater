@@ -118,9 +118,7 @@ def main():
         updatedcardinfo = requests.get('https://api.trello.com/1/cards/'+updatedcardid+'?key=' + config.trelloKey + '&token='+config.trelloToken)
         loaded = json.loads(updatedcardinfo.text)
         app.logger.info(updatedcardinfo.text)
-        synclabel = []
-        if 'labels' in loaded:
-            synclabel = filter(lambda a: a['name'] == 'Sync',loaded['labels'])
+        synclabel = list(filter(lambda a: a['name'] == 'Sync',loaded['labels']))
         app.logger.info(synclabel)
         #synclabelid = filter(lambda a: a['name'] == 'Sync' and a['color'] == 'null' ,json.loads(r.text))
         if synclabel:
