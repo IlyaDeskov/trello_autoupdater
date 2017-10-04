@@ -119,7 +119,7 @@ def main():
     if updatedcardid:
         updatedcardinfo = requests.get('https://api.trello.com/1/cards/'+updatedcardid+'?' + config.CREDENTIALS_STR)
         loaded = json.loads(updatedcardinfo.text)
-        synclabel = list(filter(lambda a: a['name'] == SYNC_LABEL_NAME,loaded['labels']))
+        synclabel = list(filter(lambda a: a['name'] == config.SYNC_LABEL_NAME,loaded['labels']))
         app.logger.info(synclabel)
         if synclabel:
             app.logger.info(u'Синхронизируемая карточка')
