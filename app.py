@@ -27,9 +27,9 @@ boards = []
 json_updatedcardid = parse('action.data.card.id')
 json_alter_updatedcardid = parse('cards[0].id')
 json_updatedchecklist = parse('action.data.checklist.id')
-#json_label_synchronize = parse("labels[0].id")#"labels[?(@.name == 'Sync')].id"
-#действие $.action.display.translationKey
-#автор $.action.display.entities.memberCreator.username
+
+json_action = parse('action.display.translationKey')
+json_autor = parse('action.display.entities.memberCreator.username')
 
 json_boardids = parse('[*].id')
 
@@ -105,6 +105,10 @@ def main():
     global tasksQueue
     #app.logger.info(request.data)
     j = json.loads(request.data)
+    action = json_action.find(j)
+    action = action[0].value if action else ''
+    autor = json_autor.find(j)
+    autor = autor[0].value if autor else ''
     updatedcardid = json_updatedcardid.find(j)
     updatedcardid = updatedcardid[0].value if updatedcardid else ''
     if not updatedcardid:
@@ -116,6 +120,7 @@ def main():
             updatedcardid = json_alter_updatedcardid.find(json.loads(r.text))
             updatedcardid = updatedcardid[0].value if updatedcardid else ''
     if updatedcardid:
+        app.logger.info('%s did %s on %s' % autor,action,updatedcardid)
         updatedcardinfo = requests.get('https://api.trello.com/1/cards/'+updatedcardid+'?' + config.CREDENTIALS_STR)
         loaded = json.loads(updatedcardinfo.text)
         synclabel = list(filter(lambda a: a['name'] == config.SYNC_LABEL_NAME,loaded['labels']))

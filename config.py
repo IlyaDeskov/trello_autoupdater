@@ -17,16 +17,3 @@ SYNC_LABEL_NAME = 'Sync'
 CHECK_TIME = 30 #Seconds
 
 BOARD_FILTER = [BOARD_NAME,'MyDemo','UXCrowd',u'Развитие направления НТ']
-
-#gitlabUrl = "http://192.168.20.249:9000/"
-trelloWebhookIPs = {'107.23.104.115',
-                    '107.23.149.70',
-                    '54.152.166.250',
-                    '54.164.77.56'}
-
-appPort = 80
-#appHost = '192.168.20.249'
-appHost = '127.0.0.1'
-
-logFile = './trello_autoupdater.log'
-logLevel= logging.INFO
