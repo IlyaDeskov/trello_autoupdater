@@ -60,12 +60,7 @@ def createApp():
                 synclabel = list(filter(lambda a: a['name'] == config.SYNC_LABEL_NAME, loaded))
                 if synclabel:
                     app.logger.info(u'Синхронизируем с доской '+ bid)
-                #resu = jsonpath.jsonpath(json.loads(rr.text), "$.[?(@.name == 'Sync')]")
-                #app.logger.info(rr.text)
-                #boards = boards + [bid.value]
-            #app.logger.info(r.text)
-            
-        
+                    app.logger.info(curTask[2])
         # Set the next thread to happen
         queueWorker = threading.Timer(config.CHECK_TIME, doStuff, ())
         queueWorker.start()   
@@ -121,7 +116,7 @@ def main():
         updatedcardinfo = requests.get('https://api.trello.com/1/cards/'+updatedcardid+'?' + config.CREDENTIALS_STR)
         loaded = json.loads(updatedcardinfo.text)
         synclabel = list(filter(lambda a: a['name'] == config.SYNC_LABEL_NAME,loaded['labels']))
-        app.logger.info(synclabel)
+        #app.logger.info(synclabel)
         if synclabel:
             app.logger.info(u'Синхронизируемая карточка')
             tasksQueue = tasksQueue + [[updatedcardid,updatedcardinfo.text,request.data]]
