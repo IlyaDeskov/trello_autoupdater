@@ -60,7 +60,7 @@ def createApp():
             newName = newName[0].value if newName else ''
             cardInfoDict = json.loads(curTask[3])
             updatedCardDescription = cardInfoDict['desc']
-            updatedCardDescription = 
+            #updatedCardDescription = 
             app.logger.info('updated card name: "%s"' % updatedCardName)
             boardList = requests.get('https://api.trello.com/1/members/gitlabpflb/boards?fields=id,name' + config.CREDENTIALS_STR) #fields=id,name
             filtered = list(filter(lambda a: a['name'] not in config.BOARD_FILTER ,json.loads(boardList.text)))
