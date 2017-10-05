@@ -32,7 +32,6 @@ json_oldupdatedcardname = parse('action.data.old.name')
 json_action = parse('action.display.translationKey')
 json_autor = parse('action.display.entities.memberCreator.username')
 
-
 def createApp():
     app = Flask(__name__)
     
@@ -57,6 +56,10 @@ def createApp():
             else:
                 updatedcardname = json_updatedcardname.find(curTask[2])
             updatedcardname = updatedcardname[0].value if updatedcardname else ''
+            
+            cardinfodict = json.loads(curTask[3])
+            ucdescription = cardinfodict['desc']
+            
             app.logger.info('updated card name: "%s"' % updatedcardname)
             boardlist = requests.get('https://api.trello.com/1/members/gitlabpflb/boards?fields=id,name' + config.CREDENTIALS_STR) #fields=id,name
             filtered = list(filter(lambda a: a['name'] not in config.BOARD_FILTER ,json.loads(boardlist.text)))
@@ -74,12 +77,12 @@ def createApp():
                         for crdid in [c['id'] for c in Synchronizedcards]:
                             app.logger.info('Synchronizind with card '+ crdid)
                             app.logger.info(curTask[3])
-                           # querystring = {#'name': updatedcardname,
-                           #           'desc' = 
-                           #           'key':config.TRELLO_KEY,
-                           #           'token':config.TRELLO_TOKEN}
-                           # resu = requests.request("PUT", 'https://api.trello.com/1/cards/'+ crdid, params=querystring)
-                           # app.logger.info(resu.text)
+                            querystring = {#'name': updatedcardname,
+                                      'desc' = ucdescription
+                                      'key':config.TRELLO_KEY,
+                                      'token':config.TRELLO_TOKEN}
+                            resu = requests.request("PUT", 'https://api.trello.com/1/cards/'+ crdid, params=querystring)
+                            app.logger.info(resu.text)
         # Set the next thread to happen
         queueWorker = threading.Timer(config.CHECK_TIME, doStuff, ())
         queueWorker.start()   
