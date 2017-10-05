@@ -73,10 +73,10 @@ def createApp():
                     if Synchronizedcards:
                         for crdid in [c['id'] for c in Synchronizedcards]:
                             app.logger.info('Synchronizind with card '+ crdid)
-                            params = {'name': updatedcardname,
+                            querystring = {'name': updatedcardname,
                                       'key':config.TRELLO_KEY,
                                       'token':config.TRELLO_TOKEN}
-                            resu = requests.put('https://api.trello.com/1/cards/'+ crdid, data = params)
+                            resu = requests.request("PUT", 'https://api.trello.com/1/cards/'+ crdid, params=querystring)
                             app.logger.info(resu.text)
         # Set the next thread to happen
         queueWorker = threading.Timer(config.CHECK_TIME, doStuff, ())
