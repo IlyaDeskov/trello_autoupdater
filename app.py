@@ -53,10 +53,12 @@ def createApp():
         if curTask:
             if curTask[1] == 'action_renamed_card':
                 updatedcardname = json_oldupdatedcardname.find(curTask[2])
+                newname = json_updatedcardname.find(curTask[2])
             else:
                 updatedcardname = json_updatedcardname.find(curTask[2])
+                newname = updatedcardname
             updatedcardname = updatedcardname[0].value if updatedcardname else ''
-            
+            newname = newname[0].value if newname else ''
             cardinfodict = json.loads(curTask[3])
             ucdescription = cardinfodict['desc']
             
@@ -77,9 +79,10 @@ def createApp():
                         for crdid in [c['id'] for c in Synchronizedcards]:
                             app.logger.info('Synchronizind with card '+ crdid)
                             app.logger.info(curTask[3])
-                            querystring = {'desc'    :   ucdescription,
-                                           'key'     :   config.TRELLO_KEY,
-                                           'token'   :   config.TRELLO_TOKEN}
+                            querystring = {'name'   :   newname,
+                                           'desc'   :   ucdescription,
+                                           'key'    :   config.TRELLO_KEY,
+                                           'token'  :   config.TRELLO_TOKEN}
                             resu = requests.request("PUT", 'https://api.trello.com/1/cards/'+ crdid, params=querystring)
                             app.logger.info(resu.text)
         # Set the next thread to happen
