@@ -22,13 +22,12 @@ queueLock = threading.Lock()
 # backgroung worker
 queueWorker = threading.Thread()
 
-boards = []
 
-json_updatedcardid = parse('action.data.card.id')
-json_alter_updatedcardid = parse('cards[0].id')
-json_updatedchecklist = parse('action.data.checklist.id')
-json_updatedcardname = parse('action.data.card.name')
-json_oldupdatedcardname = parse('action.data.old.name')
+json_updatedCardID = parse('action.data.card.id')
+json_alter_updatedCardID = parse('cards[0].id')
+json_updatedChecklist = parse('action.data.checklist.id')
+json_updatedCardName = parse('action.data.card.name')
+json_oldUpdatedCardName = parse('action.data.old.name')
 json_action = parse('action.display.translationKey')
 json_autor = parse('action.display.entities.memberCreator.username')
 
@@ -52,38 +51,38 @@ def createApp():
                 #app.logger.info(tasksQueue)
         if curTask:
             if curTask[1] == 'action_renamed_card':
-                updatedcardname = json_oldupdatedcardname.find(curTask[2])
-                newname = json_updatedcardname.find(curTask[2])
+                updatedCardName = json_oldUpdatedCardName.find(curTask[2])
+                newName = json_updatedCardName.find(curTask[2])
             else:
-                updatedcardname = json_updatedcardname.find(curTask[2])
-                newname = updatedcardname
-            updatedcardname = updatedcardname[0].value if updatedcardname else ''
-            newname = newname[0].value if newname else ''
-            cardinfodict = json.loads(curTask[3])
-            ucdescription = cardinfodict['desc']
-            
-            app.logger.info('updated card name: "%s"' % updatedcardname)
-            boardlist = requests.get('https://api.trello.com/1/members/gitlabpflb/boards?fields=id,name' + config.CREDENTIALS_STR) #fields=id,name
-            filtered = list(filter(lambda a: a['name'] not in config.BOARD_FILTER ,json.loads(boardlist.text)))
-            boardids = [b['id'] for b in filtered]
-            for bid in boardids:
-                boardlabels = requests.get('https://api.trello.com/1/boards/'+bid+'/labels?' + config.CREDENTIALS_STR)
-                loaded = json.loads(boardlabels.text)
-                synclabel = list(filter(lambda a: a['name'] == config.SYNC_LABEL_NAME, loaded))
-                if synclabel:
+                updatedCardName = json_updatedCardName.find(curTask[2])
+                newName = updatedCardName
+            updatedCardName = updatedCardName[0].value if updatedCardName else ''
+            newName = newName[0].value if newName else ''
+            cardInfoDict = json.loads(curTask[3])
+            updatedCardDescription = cardInfoDict['desc']
+            updatedCardDescription = 
+            app.logger.info('updated card name: "%s"' % updatedCardName)
+            boardList = requests.get('https://api.trello.com/1/members/gitlabpflb/boards?fields=id,name' + config.CREDENTIALS_STR) #fields=id,name
+            filtered = list(filter(lambda a: a['name'] not in config.BOARD_FILTER ,json.loads(boardList.text)))
+            boardIDs = [b['id'] for b in filtered]
+            for bid in boardIDs:
+                boardLabels = requests.get('https://api.trello.com/1/boards/'+bid+'/labels?' + config.CREDENTIALS_STR)
+                loaded = json.loads(boardLabels.text)
+                syncLabel = list(filter(lambda a: a['name'] == config.SYNC_LABEL_NAME, loaded))
+                if syncLabel:
                     app.logger.info('Synchronizing with board '+ bid)
-                    boardcards = requests.get('https://api.trello.com/1/boards/'+bid+'/cards/?fields=name,id,labels' + config.CREDENTIALS_STR)
-                    Synchronizedcard = []
-                    Synchronizedcards = list(filter(lambda a: config.SYNC_LABEL_NAME in [l['name'] for l in a['labels']] and a['name'] == updatedcardname,json.loads(boardcards.text)))
-                    if Synchronizedcards:
-                        for crdid in [c['id'] for c in Synchronizedcards]:
+                    boardCards = requests.get('https://api.trello.com/1/boards/'+bid+'/cards/?fields=name,id,labels' + config.CREDENTIALS_STR)
+                    synchronizedCard = []
+                    synchronizedCards = list(filter(lambda a: config.SYNC_LABEL_NAME in [l['name'] for l in a['labels']] and a['name'] == updatedCardName,json.loads(boardCards.text)))
+                    if synchronizedCards:
+                        for crdid in [c['id'] for c in synchronizedCards]:
                             app.logger.info('Synchronizind with card '+ crdid)
                             app.logger.info(curTask[3])
-                            querystring = {'name'   :   newname,
-                                           'desc'   :   ucdescription,
+                            queryString = {'name'   :   newName,
+                                           'desc'   :   updatedCardDescription,
                                            'key'    :   config.TRELLO_KEY,
                                            'token'  :   config.TRELLO_TOKEN}
-                            resu = requests.request("PUT", 'https://api.trello.com/1/cards/'+ crdid, params=querystring)
+                            resu = requests.request("PUT", 'https://api.trello.com/1/cards/'+ crdid, params=queryString)
                             app.logger.info(resu.text)
         # Set the next thread to happen
         queueWorker = threading.Timer(config.CHECK_TIME, doStuff, ())
@@ -125,31 +124,31 @@ def process_get_req():
 @app.route('/', methods=['POST'])
 def main():
     global tasksQueue
-    #app.logger.info(request.data)
     j = json.loads(request.data)
+    app.logger.info(j)
     action = json_action.find(j)
     action = action[0].value if action else ''
     autor = json_autor.find(j)
     autor = autor[0].value if autor else ''
-    updatedcardid = json_updatedcardid.find(j)
-    updatedcardid = updatedcardid[0].value if updatedcardid else ''
-    if not updatedcardid:
-        updatedchecklist = json_updatedchecklist.find(j)
-        updatedchecklist = updatedchecklist[0].value if updatedchecklist else ''
-        if updatedchecklist:
-            app.logger.info('updated checklist: ' + updatedchecklist)
-            r = requests.get('https://api.trello.com/1/checklists/'+updatedchecklist+'?fields=name&cards=all&card_fields=name' + config.CREDENTIALS_STR)
-            updatedcardid = json_alter_updatedcardid.find(json.loads(r.text))
-            updatedcardid = updatedcardid[0].value if updatedcardid else ''
-    if updatedcardid:
-        app.logger.info('%s did %s on %s' % (autor,action,updatedcardid))
-        updatedcardinfo = requests.get('https://api.trello.com/1/cards/'+updatedcardid+'?' + config.CREDENTIALS_STR)
-        loaded = json.loads(updatedcardinfo.text)
-        synclabel = list(filter(lambda a: a['name'] == config.SYNC_LABEL_NAME,loaded['labels']))
-        #app.logger.info(synclabel)
-        if synclabel:
+    updatedCardID = json_updatedCardID.find(j)
+    updatedCardID = updatedCardID[0].value if updatedCardID else ''
+    if not updatedCardID:
+        updatedChecklist = json_updatedChecklist.find(j)
+        updatedChecklist = updatedChecklist[0].value if updatedChecklist else ''
+        if updatedChecklist:
+            app.logger.info('updated checklist: ' + updatedChecklist)
+            r = requests.get('https://api.trello.com/1/checklists/'+updatedChecklist+'?fields=name&cards=all&card_fields=name' + config.CREDENTIALS_STR)
+            updatedCardID = json_alter_updatedCardID.find(json.loads(r.text))
+            updatedCardID = updatedCardID[0].value if updatedCardID else ''
+    if updatedCardID:
+        app.logger.info('%s did %s on %s' % (autor,action,updatedCardID))
+        updatedCardInfo = requests.get('https://api.trello.com/1/cards/'+updatedCardID+'?' + config.CREDENTIALS_STR)
+        loaded = json.loads(updatedCardInfo.text)
+        syncLabel = list(filter(lambda a: a['name'] == config.SYNC_LABEL_NAME,loaded['labels']))
+        #app.logger.info(syncLabel)
+        if syncLabel:
             app.logger.info('Synchronized card')
-            tasksQueue = tasksQueue + [[updatedcardid,action,j,updatedcardinfo.text]]
+            tasksQueue = tasksQueue + [[updatedCardID,action,j,updatedCardInfo.text]]
         else:
             app.logger.info(u'NOT Synchronized card')
     #app.logger.info(r.text)
