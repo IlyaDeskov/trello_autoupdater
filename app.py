@@ -78,9 +78,9 @@ def createApp():
                             app.logger.info('Synchronizind with card '+ crdid)
                             app.logger.info(curTask[3])
                             querystring = {#'name': updatedcardname,
-                                      'desc' = ucdescription
-                                      'key':config.TRELLO_KEY,
-                                      'token':config.TRELLO_TOKEN}
+                                      'desc'    :   ucdescription
+                                      'key'     :   config.TRELLO_KEY,
+                                      'token'   :   config.TRELLO_TOKEN}
                             resu = requests.request("PUT", 'https://api.trello.com/1/cards/'+ crdid, params=querystring)
                             app.logger.info(resu.text)
         # Set the next thread to happen
