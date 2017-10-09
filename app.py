@@ -69,12 +69,17 @@ def createApp():
                 boardLabels = requests.get('https://api.trello.com/1/boards/'+bid+'/labels?' + config.CREDENTIALS_STR)
                 loaded = json.loads(boardLabels.text)
                 syncLabel = list(filter(lambda a: a['name'] == config.SYNC_LABEL_NAME, loaded))
+                boardLists = requests.get('https://api.trello.com/1/boards/'+bid+'/lists?' + config.CREDENTIALS_STR)
+                boardLists = json.loads(boardLists.text)
+                boardListsFilter = [ff['id'] for ff in list(filter(lambda a, : any([bool(re.match(reg,a['name'])) for reg in config.LIST_FILTER]),loaded))]
                 if syncLabel:
                     app.logger.info('Synchronizing with board '+ bid)
                     boardCards = requests.get('https://api.trello.com/1/boards/'+bid+'/cards/?fields=name,id,labels,idList' + config.CREDENTIALS_STR)
-                    app.logger.info(boardCards.text)
                     synchronizedCard = []
-                    synchronizedCards = list(filter(lambda a: config.SYNC_LABEL_NAME in [l['name'] for l in a['labels']] and a['name'] == updatedCardName,json.loads(boardCards.text)))
+                    synchronizedCards = list(filter(lambda a: config.SYNC_LABEL_NAME in [l['name'] for l in a['labels']]
+                                                               and a['name'] == updatedCardName
+                                                               and a['idList'] not in boardListsFilter,json.loads(boardCards.text)))
+                    app.logger.info(synchronizedCards)
                     if synchronizedCards:
                         for crdid in [c['id'] for c in synchronizedCards]:
                             app.logger.info('Synchronizind with card '+ crdid)
@@ -126,7 +131,7 @@ def process_get_req():
 def main():
     global tasksQueue
     j = json.loads(request.data)
-    app.logger.info(j)
+    #app.logger.info(j)
     action = json_action.find(j)
     action = action[0].value if action else ''
     autor = json_autor.find(j)

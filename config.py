@@ -17,3 +17,4 @@ SYNC_LABEL_NAME = 'Sync'
 CHECK_TIME = 30 #Seconds
 
 BOARD_FILTER = [BOARD_NAME,'MyDemo','UXCrowd',u'Развитие направления НТ']
+LIST_FILTER = ['IN PROGRESS','.*DONE.*'] #reg expressions accepted
