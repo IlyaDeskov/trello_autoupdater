@@ -59,7 +59,8 @@ def createApp():
             updatedCardName = updatedCardName[0].value if updatedCardName else ''
             newName = newName[0].value if newName else ''
             cardInfoDict = json.loads(curTask[3])
-            app.logger.info(cardInfoDict['labels'])
+            updatedCardLabels = [l['name'] for l in cardInfoDict['labels']]
+            app.logger.info(updatedCardLabels)
             updatedCardDescription = cardInfoDict['desc']
             #updatedCardDescription = 
             app.logger.info('updated card name: "%s"' % updatedCardName)
