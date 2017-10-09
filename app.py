@@ -71,7 +71,7 @@ def createApp():
                 syncLabel = list(filter(lambda a: a['name'] == config.SYNC_LABEL_NAME, loaded))
                 boardLists = requests.get('https://api.trello.com/1/boards/'+bid+'/lists?' + config.CREDENTIALS_STR)
                 boardLists = json.loads(boardLists.text)
-                boardListsFilter = [ff['id'] for ff in list(filter(lambda a, : any([bool(re.match(reg,a['name'])) for reg in config.LIST_FILTER]),loaded))]
+                boardListsFilter = [ff['id'] for ff in list(filter(lambda a, : any([bool(re.match(reg,a['name'])) for reg in config.LIST_FILTER]),boardLists))]
                 if syncLabel:
                     app.logger.info('Synchronizing with board '+ bid)
                     boardCards = requests.get('https://api.trello.com/1/boards/'+bid+'/cards/?fields=name,id,labels,idList' + config.CREDENTIALS_STR)
