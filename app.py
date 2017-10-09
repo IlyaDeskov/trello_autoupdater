@@ -67,11 +67,13 @@ def createApp():
             boardIDs = [b['id'] for b in filtered]
             for bid in boardIDs:
                 boardLabels = requests.get('https://api.trello.com/1/boards/'+bid+'/labels?' + config.CREDENTIALS_STR)
-                loaded = json.loads(boardLabels.text)
-                syncLabel = list(filter(lambda a: a['name'] == config.SYNC_LABEL_NAME, loaded))
+                boardLabels = json.loads(boardLabels.text)
+                boardLabels = dict([(l['name'],l['id'])for l in boardLabels])
+                syncLabel = list(filter(lambda a: a == config.SYNC_LABEL_NAME, boardLabels))
                 boardLists = requests.get('https://api.trello.com/1/boards/'+bid+'/lists?' + config.CREDENTIALS_STR)
                 boardLists = json.loads(boardLists.text)
-                boardListsFilter = [ff['id'] for ff in list(filter(lambda a, : any([bool(re.match(reg,a['name'])) for reg in config.LIST_FILTER]),boardLists))]
+                boardLists = dict([(l['id'],l['name'])for l in boardLists])
+                boardListsFilter = dict(list(filter(lambda a, : any([bool(re.match(reg,a[1])) for reg in config.LIST_FILTER]),boardLists.items())))
                 if syncLabel:
                     app.logger.info('Synchronizing with board '+ bid)
                     boardCards = requests.get('https://api.trello.com/1/boards/'+bid+'/cards/?fields=name,id,labels,idList' + config.CREDENTIALS_STR)
