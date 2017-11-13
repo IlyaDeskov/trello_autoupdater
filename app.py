@@ -91,7 +91,7 @@ def createApp():
                             app.logger.info(boardLabels)
                             labelsToAdd = []
                             labelsToCreate = []
-                            for a in updatedCardLabels:
+                            for a in dict(filter(lambda a: a != config.SYNC_LABEL_NAME,updatedCardLabels):
                                 if a in boardLabels:
                                     labelsToAdd = labelsToAdd + [boardLabels[a]]
                                 else:
