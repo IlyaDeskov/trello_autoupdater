@@ -106,9 +106,13 @@ def createApp():
                                            'key'              :   config.TRELLO_KEY,
                                            'token'            :   config.TRELLO_TOKEN,
                                            'idLabels'         :   ','.join(labelsToAdd),
-                                           'idAttachmentCover':   cardInfoDict['idAttachmentCover']}
+                                           #'idAttachmentCover':   cardInfoDict['idAttachmentCover']
+                                           }
                             resu = requests.request("PUT", 'https://api.trello.com/1/cards/'+ crdid, params=queryString)
+                            if curTask[4]:
+                                pass
                             app.logger.info(resu.text)
+                            
         # Set the next thread to happen
         queueWorker = threading.Timer(config.CHECK_TIME, doStuff, ())
         queueWorker.start()   
@@ -173,7 +177,7 @@ def main():
         #app.logger.info(syncLabel)
         if syncLabel:
             app.logger.info('Synchronized card')
-            tasksQueue = tasksQueue + [[updatedCardID,action,j,updatedCardInfo.text]]
+            tasksQueue = tasksQueue + [[updatedCardID,action,j,updatedCardInfo.text,updatedChecklist]]
         else:
             app.logger.info(u'NOT Synchronized card')
     #app.logger.info(r.text)
