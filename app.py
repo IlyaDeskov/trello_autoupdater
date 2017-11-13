@@ -89,6 +89,15 @@ def createApp():
                         for crdid in [c['id'] for c in synchronizedCards]:
                             app.logger.info('Synchronizing with card '+ crdid)
                             app.logger.info(boardLabels)
+                            labelsToAdd = []
+                            labelsToCreate = []
+                            for a in updatedCardLabels:
+                                if a in boardLabels:
+                                    labelsToAdd = labelsToAdd + [boardLabels[a]]
+                                else:
+                                    labelsToCreate = labelsToCreate + [a]
+                            app.logger.info(labelsToAdd)
+                            app.logger.info(labelsToCreate)
                             app.logger.info(curTask[3])
                             queryString = {'name'   :   newName,
                                            'desc'   :   updatedCardDescription,
