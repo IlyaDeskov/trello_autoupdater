@@ -78,7 +78,7 @@ def createApp():
                 if syncLabel:
                     app.logger.info('Synchronizing with board '+ bid)
                     boardCards = requests.get('https://api.trello.com/1/boards/'+bid+'/cards/?fields=name,id,labels,idList' + config.CREDENTIALS_STR)
-                    app.logger.info('Synchronizing with board '+ bid)
+                    app.logger.info(boardCards)
                     synchronizedCard = []
                     synchronizedCards = list(filter(lambda a: config.SYNC_LABEL_NAME in [l['name'] for l in a['labels']]
                                                                and a['name'] == updatedCardName
