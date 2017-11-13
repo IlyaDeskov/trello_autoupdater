@@ -82,7 +82,7 @@ def createApp():
                     synchronizedCards = list(filter(lambda a: config.SYNC_LABEL_NAME in [l['name'] for l in a['labels']]
                                                                and a['name'] == updatedCardName
                                                                and a['idList'] not in boardListsFilter,json.loads(boardCards.text)))
-                    app.logger.info(synchronizedCards.labels)
+                    app.logger.info(synchronizedCards[0]['labels'])
                     
                     if synchronizedCards:
                         for crdid in [c['id'] for c in synchronizedCards]:
