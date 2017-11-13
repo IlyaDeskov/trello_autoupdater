@@ -101,11 +101,12 @@ def createApp():
                                     createdLabel = requests.post('https://api.trello.com/1/labels?' + config.CREDENTIALS_STR, params = {'name':ll,'color':llColor,'idBoard':bid})
                                     labelsToAdd = labelsToAdd + [json.loads(createdLabel.text)['id']]
                             app.logger.info(curTask[3])
-                            queryString = {'name'    :   newName,
-                                           'desc'    :   updatedCardDescription,
-                                           'key'     :   config.TRELLO_KEY,
-                                           'token'   :   config.TRELLO_TOKEN,
-                                           'idLabels':   ','.join(labelsToAdd)}
+                            queryString = {'name'             :   newName,
+                                           'desc'             :   updatedCardDescription,
+                                           'key'              :   config.TRELLO_KEY,
+                                           'token'            :   config.TRELLO_TOKEN,
+                                           'idLabels'         :   ','.join(labelsToAdd),
+                                           'idAttachmentCover':   cardInfoDict['idAttachmentCover']}
                             resu = requests.request("PUT", 'https://api.trello.com/1/cards/'+ crdid, params=queryString)
                             app.logger.info(resu.text)
         # Set the next thread to happen
