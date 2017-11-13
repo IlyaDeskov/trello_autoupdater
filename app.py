@@ -78,12 +78,10 @@ def createApp():
                 if syncLabel:
                     app.logger.info('Synchronizing with board '+ bid)
                     boardCards = requests.get('https://api.trello.com/1/boards/'+bid+'/cards/?fields=name,id,labels,idList' + config.CREDENTIALS_STR)
-                    app.logger.info(json.loads(boardCards.text))
                     synchronizedCard = []
                     synchronizedCards = list(filter(lambda a: config.SYNC_LABEL_NAME in [l['name'] for l in a['labels']]
                                                                and a['name'] == updatedCardName
                                                                and a['idList'] not in boardListsFilter,json.loads(boardCards.text)))
-                    #app.logger.info(list(filter(lambda a: a['name'] in updatedCardLabels,synchronizedCards[0]['labels'])))
                     app.logger.info(synchronizedCards)
                     
                     if synchronizedCards:
@@ -98,9 +96,9 @@ def createApp():
                                     labelsToCreate = labelsToCreate + [a]
                             app.logger.info(labelsToCreate)
                             app.logger.info(cardInfoDict['labels'])
-                            #if labelsToCreate:
-                            #    for ll in labelsToCreate:
-                                    
+                            if labelsToCreate:
+                                for ll in labelsToCreate:
+                                    app.logger.info(cardInfoDict['labels'])
                                     #createdLabel = requests.post('https://api.trello.com/1/labels?' + config.CREDENTIALS_STR, params = {'name':ll,'color':,'idBoard':bid})
                             app.logger.info(curTask[3])
                             queryString = {'name'    :   newName,
