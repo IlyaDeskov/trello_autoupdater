@@ -44,7 +44,6 @@ def createApp():
         global boards
         curTask = []
         with queueLock:
-        # Do your stuff with commonDataStruct Here
             #app.logger.info(tasksQueue)
             if tasksQueue:
                 curTask = tasksQueue.pop(0)
@@ -83,7 +82,8 @@ def createApp():
                     synchronizedCards = list(filter(lambda a: config.SYNC_LABEL_NAME in [l['name'] for l in a['labels']]
                                                                and a['name'] == updatedCardName
                                                                and a['idList'] not in boardListsFilter,json.loads(boardCards.text)))
-                    app.logger.info(synchronizedCards)
+                    app.logger.info(synchronizedCards.labels)
+                    
                     if synchronizedCards:
                         for crdid in [c['id'] for c in synchronizedCards]:
                             app.logger.info('Synchronizind with card '+ crdid)
