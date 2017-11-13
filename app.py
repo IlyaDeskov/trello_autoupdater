@@ -91,14 +91,13 @@ def createApp():
                             app.logger.info(boardLabels)
                             labelsToAdd = []
                             labelsToCreate = []
-                            app.logger.info(list(filter(lambda a: a != config.SYNC_LABEL_NAME,updatedCardLabels)))
-                            #for a in :
-                            #    if a in boardLabels:
-                            #        labelsToAdd = labelsToAdd + [boardLabels[a]]
-                            #    else:
-                            #        labelsToCreate = labelsToCreate + [a]
-                            #app.logger.info(labelsToAdd)
-                            #app.logger.info(labelsToCreate)
+                            for a in list(filter(lambda a: a != config.SYNC_LABEL_NAME,updatedCardLabels)):
+                                if a in boardLabels:
+                                    labelsToAdd = labelsToAdd + [boardLabels[a]]
+                                else:
+                                    labelsToCreate = labelsToCreate + [a]
+                            app.logger.info(labelsToAdd)
+                            app.logger.info(labelsToCreate)
                             app.logger.info(curTask[3])
                             queryString = {'name'   :   newName,
                                            'desc'   :   updatedCardDescription,
