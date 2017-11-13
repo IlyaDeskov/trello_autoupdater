@@ -88,7 +88,6 @@ def createApp():
                     if synchronizedCards:
                         for crdid in [c['id'] for c in synchronizedCards]:
                             app.logger.info('Synchronizing with card '+ crdid)
-                            app.logger.info(boardLabels)
                             labelsToAdd = []
                             labelsToCreate = []
                             for a in list(filter(lambda a: a != config.SYNC_LABEL_NAME,updatedCardLabels)):
@@ -96,13 +95,14 @@ def createApp():
                                     labelsToAdd = labelsToAdd + [boardLabels[a]]
                                 else:
                                     labelsToCreate = labelsToCreate + [a]
-                            app.logger.info(labelsToAdd)
-                            app.logger.info(labelsToCreate)
+                            if labelsToCreate:
+                                app.logger.info('shit happens...')
                             app.logger.info(curTask[3])
-                            queryString = {'name'   :   newName,
-                                           'desc'   :   updatedCardDescription,
-                                           'key'    :   config.TRELLO_KEY,
-                                           'token'  :   config.TRELLO_TOKEN}
+                            queryString = {'name'    :   newName,
+                                           'desc'    :   updatedCardDescription,
+                                           'key'     :   config.TRELLO_KEY,
+                                           'token'   :   config.TRELLO_TOKEN,
+                                           'idLabels':   ','.join(labelsToAdd)}
                             resu = requests.request("PUT", 'https://api.trello.com/1/cards/'+ crdid, params=queryString)
                             app.logger.info(resu.text)
         # Set the next thread to happen
