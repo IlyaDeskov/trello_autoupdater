@@ -110,7 +110,7 @@ def createApp():
                                            }
                             resu = requests.request("PUT", 'https://api.trello.com/1/cards/'+ crdid, params=queryString)
                             if curTask[4]:
-                                pass
+                                app.logger.info(cardInfoDict)
                             app.logger.info(resu.text)
                             
         # Set the next thread to happen
