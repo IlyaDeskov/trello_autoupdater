@@ -96,7 +96,9 @@ def createApp():
                                 else:
                                     labelsToCreate = labelsToCreate + [a]
                             if labelsToCreate:
-                                app.logger.info('shit happens...')
+                                for ll in labelsToCreate:
+                                    app.logger.info(cardInfoDict['labels'])
+                                    #createdLabel = requests.post('https://api.trello.com/1/labels?' + config.CREDENTIALS_STR, params = {'name':ll,'color':,'idBoard':bid})
                             app.logger.info(curTask[3])
                             queryString = {'name'    :   newName,
                                            'desc'    :   updatedCardDescription,
