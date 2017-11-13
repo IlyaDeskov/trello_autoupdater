@@ -99,7 +99,7 @@ def createApp():
                                 for ll in labelsToCreate:
                                     llColor = list(filter(lambda a: a['name'] == ll, cardInfoDict['labels']))[0]['color']
                                     createdLabel = requests.post('https://api.trello.com/1/labels?' + config.CREDENTIALS_STR, params = {'name':ll,'color':llColor,'idBoard':bid})
-                                    app.logger.info(labelsToCreate.text)
+                                    app.logger.info(createdLabel.text)
                             app.logger.info(curTask[3])
                             queryString = {'name'    :   newName,
                                            'desc'    :   updatedCardDescription,
