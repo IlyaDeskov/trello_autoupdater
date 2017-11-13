@@ -97,14 +97,15 @@ def createApp():
                             app.logger.info(labelsToCreate)
                             if labelsToCreate:
                                 for ll in labelsToCreate:
-                                    app.logger.info(list(filter(lambda a: a['name'] == ll, cardInfoDict['labels'])))
-                                    #createdLabel = requests.post('https://api.trello.com/1/labels?' + config.CREDENTIALS_STR, params = {'name':ll,'color':,'idBoard':bid})
+                                    llColor = list(filter(lambda a: a['name'] == ll, cardInfoDict['labels']))[0]['color']
+                                    createdLabel = requests.post('https://api.trello.com/1/labels?' + config.CREDENTIALS_STR, params = {'name':ll,'color':llColor,'idBoard':bid})
+                                    app.logger.info(labelsToCreate.text)
                             app.logger.info(curTask[3])
                             queryString = {'name'    :   newName,
                                            'desc'    :   updatedCardDescription,
                                            'key'     :   config.TRELLO_KEY,
                                            'token'   :   config.TRELLO_TOKEN,
-                                           'idLabels':   ','.join(labelsToAdd)}
+                                           'idLabels':   ','.join(labelsToAdd.append(config.SYNC_LABEL_NAME))}
                             resu = requests.request("PUT", 'https://api.trello.com/1/cards/'+ crdid, params=queryString)
                             app.logger.info(resu.text)
         # Set the next thread to happen
