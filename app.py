@@ -161,6 +161,7 @@ def main():
     autor = autor[0].value if autor else ''
     updatedCardID = json_updatedCardID.find(j)
     updatedCardID = updatedCardID[0].value if updatedCardID else ''
+    updatedChecklist = []
     if not updatedCardID:
         updatedChecklist = json_updatedChecklist.find(j)
         updatedChecklist = updatedChecklist[0].value if updatedChecklist else ''
