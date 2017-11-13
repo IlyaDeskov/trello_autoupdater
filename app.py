@@ -74,7 +74,7 @@ def createApp():
                 boardLists = requests.get('https://api.trello.com/1/boards/'+bid+'/lists?' + config.CREDENTIALS_STR)
                 boardLists = json.loads(boardLists.text)
                 boardLists = dict([(l['id'],l['name'])for l in boardLists])
-                boardListsFilter = dict(list(filter(lambda a, : any([bool(re.match(reg,a[1])) for reg in config.LIST_FILTER]),boardLists.items())))
+                boardListsFilter = dict(list(filter(lambda a : any([bool(re.match(reg,a[1])) for reg in config.LIST_FILTER]),boardLists.items())))
                 if syncLabel:
                     app.logger.info('Synchronizing with board '+ bid)
                     boardCards = requests.get('https://api.trello.com/1/boards/'+bid+'/cards/?fields=name,id,labels,idList' + config.CREDENTIALS_STR)
@@ -82,11 +82,13 @@ def createApp():
                     synchronizedCards = list(filter(lambda a: config.SYNC_LABEL_NAME in [l['name'] for l in a['labels']]
                                                                and a['name'] == updatedCardName
                                                                and a['idList'] not in boardListsFilter,json.loads(boardCards.text)))
-                    app.logger.info(synchronizedCards[0]['labels'])
+                    #app.logger.info(list(filter(lambda a: a['name'] in updatedCardLabels,synchronizedCards[0]['labels'])))
+                    app.logger.info(synchronizedCards)
                     
                     if synchronizedCards:
                         for crdid in [c['id'] for c in synchronizedCards]:
-                            app.logger.info('Synchronizind with card '+ crdid)
+                            app.logger.info('Synchronizing with card '+ crdid)
+                            app.logger.info(boardLabels)
                             app.logger.info(curTask[3])
                             queryString = {'name'   :   newName,
                                            'desc'   :   updatedCardDescription,
