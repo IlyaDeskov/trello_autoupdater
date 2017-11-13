@@ -52,6 +52,8 @@ def createApp():
             if curTask[1] == 'action_renamed_card':
                 updatedCardName = json_oldUpdatedCardName.find(curTask[2])
                 newName = json_updatedCardName.find(curTask[2])
+            elif curTask[4]:
+                app.logger.info(json.loads(curTask[3]))
             else:
                 updatedCardName = json_updatedCardName.find(curTask[2])
                 newName = updatedCardName
@@ -78,7 +80,7 @@ def createApp():
                 if syncLabel:
                     app.logger.info('Synchronizing with board '+ bid)
                     boardCards = requests.get('https://api.trello.com/1/boards/'+bid+'/cards/?fields=name,id,labels,idList' + config.CREDENTIALS_STR)
-                    synchronizedCard = []
+                    
                     synchronizedCards = list(filter(lambda a: config.SYNC_LABEL_NAME in [l['name'] for l in a['labels']]
                                                                and a['name'] == updatedCardName
                                                                and a['idList'] not in boardListsFilter,json.loads(boardCards.text)))
