@@ -89,7 +89,7 @@ def createApp():
                             app.logger.info('Synchronizing with card '+ crdid)
                             labelsToAdd = []
                             labelsToCreate = []
-                            for a in list(filter(lambda a: a != config.SYNC_LABEL_NAME,updatedCardLabels)):
+                            for a in updatedCardLabels:
                                 if a in boardLabels:
                                     labelsToAdd = labelsToAdd + [boardLabels[a]]
                                 else:
@@ -99,8 +99,7 @@ def createApp():
                                 for ll in labelsToCreate:
                                     llColor = list(filter(lambda a: a['name'] == ll, cardInfoDict['labels']))[0]['color']
                                     createdLabel = requests.post('https://api.trello.com/1/labels?' + config.CREDENTIALS_STR, params = {'name':ll,'color':llColor,'idBoard':bid})
-                                    app.logger.info(json.loads(createdLabel.text)['labels'])
-                            labelsToAdd = labelsToAdd + [config.SYNC_LABEL_NAME]
+                                    labelsToAdd = labelsToAdd + [json.loads(createdLabel.text)['id']]
                             app.logger.info(curTask[3])
                             queryString = {'name'    :   newName,
                                            'desc'    :   updatedCardDescription,
