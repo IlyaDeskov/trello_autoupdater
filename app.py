@@ -50,6 +50,7 @@ def createApp():
                 #app.logger.info(tasksQueue)
         if curTask:
             cardInfoDict = json.loads(curTask[3])
+            updatedCardName = ''
             if curTask[1] == 'action_renamed_card':
                 updatedCardName = json_oldUpdatedCardName.find(curTask[2])
                 newName = json_updatedCardName.find(curTask[2])
