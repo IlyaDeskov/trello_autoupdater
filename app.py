@@ -55,7 +55,7 @@ def createApp():
                 updatedCardName = json_oldUpdatedCardName.find(curTask[2])
                 newName = json_updatedCardName.find(curTask[2])
             elif curTask[4]:
-                app.logger.info(cardInfoDict)
+                app.logger.info(cardInfoDict['name'])
                 #updatedCardName[0].value = cardInfoDict['name']
             else:
                 updatedCardName = json_updatedCardName.find(curTask[2])
