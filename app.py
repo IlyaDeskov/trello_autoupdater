@@ -65,12 +65,8 @@ def createApp():
                 newName = updatedCardName
                 updatedCardName = updatedCardName[0].value if updatedCardName else ''
                 newName = newName[0].value if newName else ''
-            
-            
             updatedCardLabels = [l['name'] for l in cardInfoDict['labels']]
-            app.logger.info(updatedCardLabels)
             updatedCardDescription = cardInfoDict['desc']
-            #updatedCardDescription = 
             app.logger.info('updated card name: "%s"' % updatedCardName)
             boardList = requests.get('https://api.trello.com/1/members/gitlabpflb/boards?fields=id,name' + config.CREDENTIALS_STR) #fields=id,name
             filtered = list(filter(lambda a: a['name'] not in config.BOARD_FILTER ,json.loads(boardList.text)))
@@ -103,12 +99,12 @@ def createApp():
                                     labelsToAdd = labelsToAdd + [boardLabels[a]]
                                 else:
                                     labelsToCreate = labelsToCreate + [a]
-                            app.logger.info(labelsToCreate)
                             if labelsToCreate:
                                 for ll in labelsToCreate:
                                     llColor = list(filter(lambda a: a['name'] == ll, cardInfoDict['labels']))[0]['color']
                                     createdLabel = requests.post('https://api.trello.com/1/labels?' + config.CREDENTIALS_STR, params = {'name':ll,'color':llColor,'idBoard':bid})
                                     labelsToAdd = labelsToAdd + [json.loads(createdLabel.text)['id']]
+                            
                             app.logger.info(curTask[3])
                             queryString = {'name'             :   newName,
                                            'desc'             :   updatedCardDescription,
@@ -119,7 +115,8 @@ def createApp():
                                            }
                             resu = requests.request("PUT", 'https://api.trello.com/1/cards/'+ crdid, params=queryString)
                             if curTask[4]:
-                                app.logger.info(cardInfoDict)
+                                boardCheckLists = requests.get('https://api.trello.com/1/boards/'+bid+'/checklists?checkItem_fields=name&fields=name' + config.CREDENTIALS_STR)
+                                app.logger.info(json.loads(boardCheckLists.text))
                             app.logger.info(resu.text)
                             
         # Set the next thread to happen
